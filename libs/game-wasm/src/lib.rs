@@ -41,6 +41,11 @@ impl Game {
     }
 }
 
+#[wasm_bindgen]
+pub fn hello_world() -> String {
+    "Hello guys welcome!".into()
+}
+
 
 #[cfg(test)]
 mod tests {
