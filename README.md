@@ -14,3 +14,12 @@
   - Navigate to "localhost:8080" and see that you are connected to wasm!
 
 4. If you check the console you should see rust structs converted into native JS obects
+
+### FAQ
+
+#### How do RUST modules work?
+If you are unsure about how rust modules works there is an excellent video on it below:
+https://www.youtube.com/watch?v=969j0qnJGi8
+
+Here is a seperate repository based on the video on how modules work if you want to see actual code.
+https://github.com/edgarcoime/rust-modules-example/tree/main/src
