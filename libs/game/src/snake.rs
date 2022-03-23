@@ -5,6 +5,7 @@ pub use snake_segment::*;
 mod snake_head;
 mod snake_segment;
 
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Snake {
     head: SnakeHead,
     segments: Vec<SnakeSegment>
@@ -16,5 +17,13 @@ impl Snake {
             head: SnakeHead::new(x, y),
             segments: vec![],
         }
+    }
+
+    pub fn get_head(&self) -> &SnakeHead {
+        &self.head
+    }
+
+    pub fn get_segments(&self) -> &[SnakeSegment] {
+        &self.segments
     }
 }

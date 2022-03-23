@@ -11,6 +11,7 @@ mod snake;
 
 pub struct Game {
     snake: Snake,
+    config: Config,
 }
 
 impl Game {
@@ -18,8 +19,17 @@ impl Game {
         // Perhaps you need Random number generator ^^
 
         Self {
-            snake: Snake::new(config.snake_init_pos.0, config.snake_init_pos.1)
+            snake: Snake::new(config.snake_init_pos.0, config.snake_init_pos.1),
+            config,
         }
+    }
+
+    pub fn snake(&self) -> &Snake {
+        &self.snake
+    }
+
+    pub fn config(&self) -> &Config {
+        &self.config
     }
 
     pub fn hello_world() {
