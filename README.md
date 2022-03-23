@@ -12,3 +12,5 @@
   - run "npm install"
   - run "npm run start"
   - Navigate to "localhost:8080" and see that you are connected to wasm!
+
+4. If you check the console you should see rust structs converted into native JS obects
