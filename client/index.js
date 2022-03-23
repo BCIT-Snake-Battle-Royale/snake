@@ -1,0 +1,1 @@
+import * as game from "lib-game-wasm";
