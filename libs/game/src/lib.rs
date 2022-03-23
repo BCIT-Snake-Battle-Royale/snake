@@ -1,7 +1,12 @@
 pub use crate::{
-    snake::*
+    snake::*,
+    config::*,
 };
 
+use serde::{Deserialize, Serialize};
+use rand::{RngCore, Rng};
+
+mod config;
 mod snake;
 
 pub struct Game {
@@ -9,9 +14,11 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new() -> Self {
+    pub fn new(config: Config, rng: &mut dyn RngCore) -> Self {
+        // Perhaps you need Random number generator ^^
+
         Self {
-            snake: Snake::new(0, 0)
+            snake: Snake::new(config.snake_init_pos.0, config.snake_init_pos.1)
         }
     }
 
