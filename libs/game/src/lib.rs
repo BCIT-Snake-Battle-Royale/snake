@@ -1,6 +1,7 @@
 pub use crate::{
     snake::*,
     config::*,
+    item::*,
 };
 
 use serde::{Deserialize, Serialize};
@@ -8,6 +9,7 @@ use rand::{RngCore, Rng};
 
 mod config;
 mod snake;
+mod item;
 
 pub struct Game {
     snake: Snake,
