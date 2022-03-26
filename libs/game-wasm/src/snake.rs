@@ -15,7 +15,7 @@ pub struct Snake {
 impl From<&game::Snake> for Snake {
     fn from(snake: &game::Snake) -> Self {
         let segments = snake
-            .get_segments()
+            .get_tail()
             .iter()
             .map(SnakeSegment::from)
             .collect();

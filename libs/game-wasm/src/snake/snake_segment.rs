@@ -6,8 +6,8 @@ pub struct SnakeSegment {
     pub y: usize,
 }
 
-impl From<&game::SnakeSegment> for SnakeSegment {
-    fn from(snake_seg: &game::SnakeSegment) -> Self {
+impl From<&game::Segment> for SnakeSegment {
+    fn from(snake_seg: &game::Segment) -> Self {
         Self {
             x: snake_seg.x(),
             y: snake_seg.y(),
