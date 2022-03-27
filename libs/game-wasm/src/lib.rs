@@ -7,12 +7,14 @@ use wasm_bindgen::prelude::*;
 use rand::prelude::*;
 
 mod snake;
+mod canvas;
 
 #[wasm_bindgen]
 pub struct Game {
     // Dependencies here, maybe you want random num generator?
     rng: ThreadRng,
     game: game::Game,
+    canvas: canvas::Canvas,
 }
 
 #[wasm_bindgen]
@@ -24,7 +26,9 @@ impl Game {
         let mut rng = thread_rng();
         let game = game::Game::new(config, &mut rng);
 
-        Self { rng, game }
+        let canvas = canvas::Canvas::new("snake-canvas", 100, 100);
+
+        Self { rng, game, canvas }
     }
 
     pub fn default_config() -> JsValue {
@@ -39,13 +43,17 @@ impl Game {
         let snake = Snake::from(self.game.snake());
         JsValue::from_serde(&snake).unwrap()
     }
+
+    pub fn start(&self) {
+        self.canvas.ctx.set_fill_style(&"#0000FF".into());
+        self.canvas.ctx.fill_rect(5.0, 5.0, 10.0, 10.0);
+    }
 }
 
 #[wasm_bindgen]
 pub fn hello_world() -> String {
     "Hello guys welcome!".into()
 }
-
 
 #[cfg(test)]
 mod tests {
