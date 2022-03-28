@@ -14,12 +14,13 @@ pub struct Item {
 }
 
 impl Item {
-    pub fn new(x: usize, y: usize, speed_effect: i32, invincibility: bool) -> Item {
+    
+    pub fn new(item_type: ItemType, x: usize, y: usize, speed_effect: i32, invincibility: bool) -> Item {
         Self {
+            item_type,
             x,
             y,
             speed_effect,
-            invincibility,
         }
     }
 
