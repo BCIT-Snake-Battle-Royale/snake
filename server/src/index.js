@@ -13,6 +13,14 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("A user has connected")
 
+  socket.on("hello", (data) => {
+    socket.emit("helloBack", { message: "Hello world to you"})
+  })
+
+  socket.on("gameState", (data) => {
+    console.log(data)
+  })
+
   socket.on("disconnect", () => {
     console.log("User has disconnected")
   })
