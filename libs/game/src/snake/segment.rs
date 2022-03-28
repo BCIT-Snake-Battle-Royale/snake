@@ -1,6 +1,6 @@
 use crate::*;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Copy, Clone)]
 pub struct Segment {
     pub x: usize,
     pub y: usize,

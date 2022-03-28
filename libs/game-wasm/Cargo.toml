@@ -11,6 +11,18 @@ lib-game = { path = "../game" }
 wasm-bindgen = { version = "0.2.79", features = ["serde-serialize"] }
 serde = { version = "1.0.136", features = ["derive"] }
 getrandom = { version = "0.2.5", features = ["js"] }
+js-sys = "0.3.56"
+
+[dependencies.web-sys]
+version = "0.3.56"
+features = [
+  "CanvasRenderingContext2d",
+  "Document",
+  "Element",
+  "HtmlCanvasElement",
+  "Window",
+]
+
 
 [lib]
 crate-type = ["cdylib"]

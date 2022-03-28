@@ -37,6 +37,15 @@ impl Game {
     pub fn hello_world() {
         println!("Hello world!");
     }
+
+    pub fn apply_item_effect(item: Item, snake: &mut Snake) {
+
+        match item.item_type {
+            SpeedModifier => snake.set_speed(item.get_speed_effect().try_into().unwrap()),
+            InvincibilityModifier => snake.set_is_invincible()
+        }
+
+    }
 }
 
 #[cfg(test)]

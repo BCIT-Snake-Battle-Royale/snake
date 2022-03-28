@@ -11,3 +11,7 @@ socket.emit("gameState", snakeGame.config())
 
 console.log(game.hello_world())
 console.log(game.Game.default_config())
+
+snakeGame.start();
+console.log(snakeGame.config())
+console.log(snakeGame.snake())
