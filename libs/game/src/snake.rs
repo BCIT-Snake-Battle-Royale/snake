@@ -26,7 +26,7 @@ pub struct Snake {
     item_queue: Vec<Item>,
     score: usize,
     speed: usize,
-    is_invincible: bool,
+    invincibility_timer: usize, // Item team made this change
     is_alive: bool
 }
 
@@ -39,7 +39,7 @@ impl Snake {
             item_queue: Vec::new(),
             score: 0,
             speed: 1,    // defaulted to 1 for now
-            is_invincible: true,
+            invincibility_timer: 0, // Set to not invincible to start
             is_alive: true,
         }
     }
@@ -65,11 +65,13 @@ impl Snake {
     }
 
     pub fn get_is_invincible(&self) -> bool {
-        self.is_invincible
+        self.invincibility_timer > 0
     }
 
-    pub fn get_is_alive(&self) -> bool {
-        self.is_invincible
+    // Setters below added by item team:
+
+    pub fn decrement_invincibility_timer(&mut self) {
+        self.invincibility_timer -= 1
     }
 
     fn get_new_segment(old_x: usize, old_y: usize, dir: Direction) -> Segment {
@@ -93,4 +95,18 @@ impl Snake {
         self.tail.truncate(self.score);
         self.head = snake::Snake::get_new_segment(self.head.x(), self.head.y(), self.direction);
     }
+    // Right now, speed update is permanent
+    pub fn set_speed(&mut self, speed_effect: usize) {
+        self.speed += speed_effect
+    }
+
+    pub fn set_is_invincible(&mut self) {
+        self.invincibility_timer += 10 // This will need to be adjusted
+    }
+
+    // TODO: Don't think we need this?
+    // pub fn get_is_alive(&self) -> bool {
+    //     self.is_invincible
+    // }
+
 }
