@@ -9,13 +9,13 @@ mod segment;
 // know which direction; we'll just have to make it so
 // turning can only be a relative left/right
 // #[wasm_bindgen] // idrk what this line does but it was in game of life a lot but it's causing compile errors akljdh
-#[repr(u8)]
+#[repr(u16)]
 #[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq)]
 pub enum Direction {
     Up = 0,
-    Right = 1,
-    Down = 2,
-    Left = 3,
+    Right = 90,
+    Down = 180,
+    Left = 270,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -74,6 +74,7 @@ impl Snake {
         self.invincibility_timer -= 1
     }
 
+    // makes a segment at coordinates according to given direction
     fn get_new_segment(old_x: usize, old_y: usize, dir: Direction) -> Segment {
        let (x, y) = match dir {
            Direction::Up => (old_x, old_y - 1),
@@ -86,11 +87,19 @@ impl Snake {
     }
 
     pub fn move_snake(&mut self) {
-        // this moves the snake
         self.tail.insert(0, self.head);
         self.tail.truncate(self.score);
         self.head = snake::Snake::get_new_segment(self.head.x(), self.head.y(), self.direction);
     }
+
+    pub fn die_if_out_of_bounds(&mut self, grid_width: usize, grid_height: usize) {
+        // because the head's x and y are usize, any negative coordinates should overflow
+        // into being positive; ergo, only checking if x/y is greater than width/height
+        if self.head.x >= grid_width || self.head.y >= grid_height {
+            self.is_alive = false
+        }
+    }
+
     // Right now, speed update is permanent
     pub fn set_speed(&mut self, speed_effect: usize) {
         self.speed += speed_effect
