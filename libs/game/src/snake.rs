@@ -85,11 +85,7 @@ impl Snake {
        Segment::new(x, y)
     }
 
-    pub fn tick(&mut self) {        
-        // todo: check for key press and change direction
-        
-        // todo: check for collision with wall and then Die
-
+    pub fn move_snake(&mut self) {
         // this moves the snake
         self.tail.insert(0, self.head);
         self.tail.truncate(self.score);
