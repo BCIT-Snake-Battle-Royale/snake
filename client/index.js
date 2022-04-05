@@ -20,8 +20,16 @@ socket.on("event-type", (data-from-server) => {
 // TODO: Event listener for when the host pressed "start game"
 
 // TODO: Event listener for when the host pressed "new game"
+socket.on("newGame", (data) => {
+    socket.broadcast.emit("allowPlayerJoin", { host: data.host })
+    console.log(data)
+})
 
 // TODO: Event listener when someone has won
+socket.on("gameEnd", (data) => {
+    socket.emit("playerHasWon", { player: data.player, score: data.score })
+    console.log(data)
+})
 
 // TODO: Event listener for updating other players' snake lengths locally
 
@@ -33,8 +41,16 @@ socket.on("event-type", (data-from-server) => {
 
 // TODO: Event emitter for when the host presses "start game"
 
+// Receive the gamestate from the server
+socket.on("gameState", (data) => {
+    console.log(data)
+})
 
 // Emit the snakeGame's gamestate twice a second to the server
+setInterval(() => {
+    socket.broadcast.emit("gameState", snakeGame.config())
+}, 500)
+
 // TODO: Replace player name with the actual name that the player has inputted
 multi.emitGameState(snakeGame, socket, "player-name-here");
 
