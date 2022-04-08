@@ -10,6 +10,7 @@ const socket = io("ws://localhost:4321");
 socket.emit("hello", { message: "world" })
 socket.emit("gameState", snakeGame.config())
 
+// TODO: Move emitters or listeners to the multiplayer module for organization
 /*
 Event listener structure:
 socket.on("event-type", (data-from-server) => {
@@ -25,23 +26,14 @@ socket.on("newGame", (data) => {
     console.log(data)
 })
 
-// TODO: Event listener when someone has won
+// TODO: Event listener when the game ends/ someone has won
 socket.on("gameEnd", (data) => {
     socket.emit("playerHasWon", { player: data.player, score: data.score })
     console.log(data)
 })
 
-// TODO: Event listener for updating other players' snake lengths locally
-
-// TODO: Event emitter for when a player has joined the game
-
-
-// Socket functions for the host
-// TODO: Event emitter for when the host presses "new game" and updates the front end with the waiting room UI
-
-// TODO: Event emitter for when the host presses "start game"
-
-// Receive the gamestate from the server
+// Event listener for updating game state and other player's scores/ rankings
+// TODO: Update the front-end with this data
 socket.on("gameState", (data) => {
     console.log(data)
 })
@@ -51,8 +43,8 @@ setInterval(() => {
     socket.broadcast.emit("gameState", snakeGame.config())
 }, 500)
 
-// TODO: Replace player name with the actual name that the player has inputted
-multi.emitGameState(snakeGame, socket, "player-name-here");
+// TODO: Replace player name with the player userId has inputted
+multi.updateStateHandler(snakeGame, socket, "room-code-name-here");
 
 console.log(game.hello_world())
 console.log(game.Game.default_config())
