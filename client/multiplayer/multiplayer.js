@@ -6,13 +6,14 @@ export * from "./multiplayer.js"
 // TODO: Add the death flag from the snake config once available
 export function updateStateHandler(snakeGame, socket, name) {
     const config = snakeGame.config();
-    const gs = {grid_width: config.grid_width, 
+    const gs = {
+        grid_width: config.grid_width, 
         grid_height: config.grid_height, 
         length: config.snake_init_pos.length,
         name: name}
     setInterval(() => {
         socket.emit("gameState", gs)
-    }, 500);
+    }, 10500);
 }
 
 // Socket emitter Function for emitting to the server that a client has joined a lobby

@@ -19,6 +19,13 @@ io.on("connection", (socket) => {
 
   socket.on("gameState", (data) => {
     console.log(data)
+
+  })
+  socket.on("startGame", (data) => {
+    console.log(data)
+  })
+  socket.on("newGame", (data) => {
+    console.log(data)
   })
 
   socket.on("disconnect", () => {

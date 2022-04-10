@@ -3,14 +3,16 @@ import { io } from 'socket.io-client';
 import * as multi from "./multiplayer/multiplayer"
 
 let snakeGame = new game.Game(game.Game.default_config());
-console.log(snakeGame.config())
-console.log(snakeGame.snake())
-
+// console.log(snakeGame.config())
+// console.log(snakeGame.snake())
 const socket = io("ws://localhost:4321");
 socket.emit("hello", { message: "world" })
 socket.emit("gameState", snakeGame.config())
 
-// TODO: Move emitters or listeners to the multiplayer module for organization
+document.getElementById("new-game").addEventListener("click", () => {
+    // console.log("hello")
+    socket.emit("startGame", "startgame")
+})
 /*
 Event listener structure:
 socket.on("event-type", (data-from-server) => {
@@ -19,7 +21,9 @@ socket.on("event-type", (data-from-server) => {
 */
 
 // TODO: Event listener for when the host pressed "start game"
-
+socket.on("startGame", (data) => {
+    // do something with data
+})
 // TODO: Event listener for when the host pressed "new game"
 socket.on("newGame", (data) => {
     socket.broadcast.emit("allowPlayerJoin", { host: data.host })
@@ -50,5 +54,6 @@ console.log(game.hello_world())
 console.log(game.Game.default_config())
 
 snakeGame.start();
+multi.emitGameState(snakeGame, socket, "player-name-here");
 console.log(snakeGame.config())
 console.log(snakeGame.snake())
