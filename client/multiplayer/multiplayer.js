@@ -13,7 +13,7 @@ export function updateStateHandler(snakeGame, socket, name) {
         name: name}
     setInterval(() => {
         socket.emit("gameState", gs)
-    }, 10500);
+    }, 500);
 }
 
 // Socket emitter Function for emitting to the server that a client has joined a lobby

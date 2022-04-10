@@ -50,10 +50,12 @@ setInterval(() => {
 // TODO: Replace player name with the player userId has inputted
 multi.updateStateHandler(snakeGame, socket, "room-code-name-here");
 
+// old
+//multi.emitGameState(snakeGame, socket, "player-name-here");
+
 console.log(game.hello_world())
 console.log(game.Game.default_config())
 
 snakeGame.start();
-multi.emitGameState(snakeGame, socket, "player-name-here");
 console.log(snakeGame.config())
 console.log(snakeGame.snake())
