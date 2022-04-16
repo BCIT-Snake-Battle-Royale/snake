@@ -10,6 +10,7 @@ const io = new Server(server, {
   }
 });
 const gameStates = {}
+// add nickname to state
 const startingState = {isAlive: true, score: 0};
 
 io.on("connection", (socket) => {
@@ -50,7 +51,6 @@ io.on("connection", (socket) => {
   const updateGameHandler = (roomId, userState) => {
     if (!userState.isAlive) {
       gameStates[roomId][numUsers]--;
-      // need to calculate ranking, add an extra property to game state
       if (gameStates[roomId][numUsers] === 0) {
         socket.emit("gameOver", gameStates[roomId]); 
       } else {
@@ -58,9 +58,14 @@ io.on("connection", (socket) => {
       }
     } 
   }
+  
 
   /* listening sockets */
   socket.on("newGame", newGameHandler);
+
+  socket.on("joinGame", (roomId) => {
+    joinGameHandler(roomId);
+  })
 
   socket.on("disconnect", () => {
     console.log("User has disconnected")
