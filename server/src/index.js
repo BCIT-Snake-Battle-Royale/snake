@@ -66,6 +66,7 @@ io.on("connection", (socket) => {
 
   socket.on("joinGame", (roomId) => {
     joinGameHandler(roomId);
+  });
 
   socket.on("gameState", (data) => {
     console.log(data)
