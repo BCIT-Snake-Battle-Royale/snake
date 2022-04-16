@@ -63,8 +63,19 @@ io.on("connection", (socket) => {
   /* listening sockets */
   socket.on("newGame", newGameHandler);
 
+
   socket.on("joinGame", (roomId) => {
     joinGameHandler(roomId);
+
+  socket.on("gameState", (data) => {
+    console.log(data)
+
+  })
+  socket.on("startGame", (data) => {
+    console.log(data)
+  })
+  socket.on("newGame", (data) => {
+    console.log(data)
   })
 
   socket.on("disconnect", () => {
