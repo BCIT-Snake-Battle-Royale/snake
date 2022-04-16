@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
   /* server side helper functions */
   const newGameHandler = (username) => {
     let roomId = "testRoom"; // replace with a random room name generator
-    const startingState = {isAlive: true, score: 0, username: username};
+    const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
 
     // check if room exists already, otherwise generate another room name
     // ...
@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
     gameStates[roomId]["numUsers"] = 1;
     socket.join(roomId); // this room is used for broadcasting messages
     console.log(gameStates);
-    socket.emit(NEW_GAME, roomId);
+    socket.emit(NEW_GAME, startingState);
   };
 
   const joinGameHandler = (roomId) => {
