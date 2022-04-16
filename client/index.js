@@ -6,8 +6,12 @@ let snakeGame = new game.Game(game.Game.default_config());
 // console.log(snakeGame.config())
 // console.log(snakeGame.snake())
 const socket = io("ws://localhost:4321");
+let roomId;
+
+// TEST CLIENT CODE
 socket.emit("hello", { message: "world" })
 socket.emit("gameState", snakeGame.config())
+
 
 document.getElementById("new-game").addEventListener("click", () => {
     // console.log("hello")
