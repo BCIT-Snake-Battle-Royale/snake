@@ -2,6 +2,17 @@ import express from "express";
 import { Server } from "socket.io";
 import http from "http";
 
+// event emitter topics
+const NEW_GAME = "newGame";
+const JOIN_GAME = "joinGame";
+const GAME_STATE = "gameState";
+const END_GAME = "endGame";
+
+const SUCCESS = "success";
+const ERROR = "error";
+
+const SERVER_PORT = 4321;
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -11,7 +22,7 @@ const io = new Server(server, {
 });
 const gameStates = {}
 // add nickname to state
-const startingState = {isAlive: true, score: 0};
+// [username: {isAlive: true, score: 0}]
 
 io.on("connection", (socket) => {
   // every socket represents a connected client
@@ -19,8 +30,9 @@ io.on("connection", (socket) => {
   console.log("A user has connected")
 
   /* server side helper functions */
-  const newGameHandler = () => {
+  const newGameHandler = (username) => {
     let roomId = "testRoom"; // replace with a random room name generator
+    const startingState = {isAlive: true, score: 0, username: username};
 
     // check if room exists already, otherwise generate another room name
     // ...
@@ -30,52 +42,43 @@ io.on("connection", (socket) => {
     gameStates[roomId]["numUsers"] = 1;
     socket.join(roomId); // this room is used for broadcasting messages
     console.log(gameStates);
-    socket.emit("newGame", roomId);
+    socket.emit(NEW_GAME, roomId);
   };
 
   const joinGameHandler = (roomId) => {
     // check if roomId exists, if it exists emit message on success
     // else error message
     // ...
+    // check if username is taken
     gameStates[roomId][id] = startingState;
     gameStates[roomId][numUsers]++;
     socket.join(roomId);
-    socket.emit("joinGame", {msg: "success"});
+    // add initial state and nickname
+    socket.emit(JOIN_GAME, {msg: SUCCESS});
   };
 
   // only the host can emit start game on client side
   const startGameHandler = (roomId) => {
-    socket.emit("gameState", gameStates[roomId]);
+    socket.emit(GAME_STATE, gameStates[roomId]);
   };
 
   const updateGameHandler = (roomId, userState) => {
     if (!userState.isAlive) {
       gameStates[roomId][numUsers]--;
       if (gameStates[roomId][numUsers] === 0) {
-        socket.emit("gameOver", gameStates[roomId]); 
+        socket.emit(END_GAME, gameStates[roomId]); 
       } else {
-        socket.emit("gameState", gameStates[roomId]);
+        socket.emit(GAME_STATE, gameStates[roomId]);
       }
     } 
   }
   
 
   /* listening sockets */
-  socket.on("newGame", newGameHandler);
+  socket.on(NEW_GAME,  () => {newGameHandler(username)});
 
-
-  socket.on("joinGame", (roomId) => {
+  socket.on(JOIN_GAME, (roomId) => {
     joinGameHandler(roomId);
-
-  socket.on("gameState", (data) => {
-    console.log(data)
-
-  })
-  socket.on("startGame", (data) => {
-    console.log(data)
-  })
-  socket.on("newGame", (data) => {
-    console.log(data)
   })
 
   socket.on("disconnect", () => {
@@ -83,7 +86,7 @@ io.on("connection", (socket) => {
   })
 });
 
-const port = process.env.PORT || 4321;
+const port = process.env.PORT || SERVER_PORT;
 server.listen(port, () => {
   console.log(`Listening on *:${port}`)
 })
