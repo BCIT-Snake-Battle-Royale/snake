@@ -8,8 +8,12 @@ const JOIN_GAME = "joinGame";
 const GAME_STATE = "gameState";
 const END_GAME = "endGame";
 
+// messages
 const SUCCESS = "success";
 const ERROR = "error";
+
+// state
+const ROOM_ID = "roomId"
 
 const SERVER_PORT = 4321;
 
@@ -42,24 +46,21 @@ io.on("connection", (socket) => {
     gameStates[roomId]["numUsers"] = 1;
     socket.join(roomId); // this room is used for broadcasting messages
     console.log(gameStates);
-    socket.emit(NEW_GAME, startingState);
+    socket.emit(NEW_GAME, {msg: SUCCESS, state: startingState});
   };
 
-  const joinGameHandler = (roomId) => {
+  const joinGameHandler = (roomId, username) => {
+    const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
     // check if roomId exists, if it exists emit message on success
     // else error message
     // ...
     // check if username is taken
+    // ... 
     gameStates[roomId][id] = startingState;
     gameStates[roomId][numUsers]++;
     socket.join(roomId);
     // add initial state and nickname
-    socket.emit(JOIN_GAME, {msg: SUCCESS});
-  };
-
-  // only the host can emit start game on client side
-  const startGameHandler = (roomId) => {
-    socket.emit(GAME_STATE, gameStates[roomId]);
+    socket.emit(JOIN_GAME, {msg: SUCCESS, state: startingState});
   };
 
   const updateGameHandler = (roomId, userState) => {
@@ -75,10 +76,12 @@ io.on("connection", (socket) => {
   
 
   /* listening sockets */
-  socket.on(NEW_GAME,  () => {newGameHandler(username)});
+  socket.on(NEW_GAME,  (username) => {
+    newGameHandler(username)
+  });
 
-  socket.on(JOIN_GAME, (roomId) => {
-    joinGameHandler(roomId);
+  socket.on(JOIN_GAME, (roomId, username) => {
+    joinGameHandler(roomId, username);
   })
 
   socket.on("disconnect", () => {
