@@ -27,5 +27,8 @@ export function joinGameHandler(roomCode) {
 
 // Socket functions for the lobby hosts
 // TODO: Event emitter for when the host presses "new game" and updates the front end with the waiting room UI
+export function newGameHandler() {
+    socket.emit("newGame", roomCode);
+}
 
 // TODO: Event emitter for when the host presses "start game"

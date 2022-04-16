@@ -16,6 +16,8 @@ socket.emit("gameState", snakeGame.config())
 document.getElementById("new-game").addEventListener("click", () => {
     // console.log("hello")
     socket.emit("startGame", "startgame")
+
+    multi.newGameHandler();
 })
 /*
 Event listener structure:
