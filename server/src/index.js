@@ -6,6 +6,7 @@ import http from "http";
 const NEW_GAME = "newGame";
 const JOIN_GAME = "joinGame";
 const GAME_STATE = "gameState";
+const START_GAME = "startGame";
 const END_GAME = "endGame";
 const EARLY_DISCONNECT = "earlyDisconnect";
 
@@ -15,6 +16,7 @@ const ERROR = "error";
 
 // state keys
 const SCORE = "score";
+const USERNAME = "username";
 const IS_ALIVE = "isAlive";
 const NUM_USERS = "numUsers";
 
@@ -48,7 +50,7 @@ io.on("connection", (socket) => {
     gameStates[roomId][NUM_USERS] = 1;
     socket.join(roomId); // this room is used for broadcasting messages
     console.log(gameStates);
-    socket.emit(NEW_GAME, {msg: SUCCESS, state: startingState});
+    socket.emit(NEW_GAME, {msg: SUCCESS, state: gameStates[roomId]});
   };
 
   const joinGameHandler = (roomId, username) => {
@@ -61,30 +63,32 @@ io.on("connection", (socket) => {
     gameStates[roomId][id] = startingState;
     gameStates[roomId][NUM_USERS]++;
     socket.join(roomId);
-    socket.emit(JOIN_GAME, {msg: SUCCESS, state: startingState});
+    socket.emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
   };
 
   const updateGameHandler = (roomId, userState) => {
     // TODO: double check what is being sent from client side
     // potential update state design: score and is alive
     // ... 
+    gameStates[roomId][id][IS_ALIVE] = userState[IS_ALIVE];
+    gameStates[roomId][id][SCORE] = userState[SCORE]; 
     if (!userState[IS_ALIVE]) {
       gameStates[roomId][NUM_USERS]--;
-      gameStates[roomId][id][IS_ALIVE] = userState[IS_ALIVE];
-      gameStates[roomId][id][SCORE] = userState[SCORE]; 
-      if (gameStates[roomId][NUM_USERS] === 0) {
-        socket.emit(END_GAME, gameStates[roomId]); 
-      } else {
-        socket.emit(GAME_STATE, gameStates[roomId]);
-      }
     } 
+    if (gameStates[roomId][NUM_USERS] === 0) {
+      // TODO: broadcast
+      socket.emit(END_GAME, gameStates[roomId]); 
+    } else {
+      socket.emit(GAME_STATE, gameStates[roomId]);
+    }
   }
   
-  const disconnectHandler = () => {
+  const disconnectHandler = (roomId) => {
     // iterate through the rooms the socket was present in
     // and update the state 
-
-  }
+    gameStates[roomId][id][IS_ALIVE] = false;
+    socket.emit(GAME_STATE, gameStates[roomId])
+  } 
   
 
   /* listening sockets */
@@ -97,6 +101,8 @@ io.on("connection", (socket) => {
     joinGameHandler(data.roomId, data.username);
   })
 
+  // start game handler and topic
+
   socket.on(GAME_STATE, (data) => {
     updateGameHandler(data.roomId, data.userState)
   })
@@ -107,7 +113,7 @@ io.on("connection", (socket) => {
   })
 
   // TODO: test built in disconnect topic
-   socket.on("disconnect", (data) => {
+  socket.on("disconnect", (data) => {
      // initial data design: {roomId: _}
     console.log("User has disconnected")
     // broadcast new state to everyone else in the room
