@@ -75,7 +75,7 @@ io.on("connection", (socket) => {
   
 
   /* listening sockets */
-  socket.on(NEW_GAME,  () => {newGameHandler(username)});
+  socket.on(NEW_GAME,  () => {newGameHandler()});
 
   socket.on(JOIN_GAME, (roomId) => {
     joinGameHandler(roomId);
