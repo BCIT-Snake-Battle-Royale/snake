@@ -9,30 +9,33 @@ export function updateStateHandler(snakeGame, socket, roomId, username) {
     // Game state should have the isAlive boolean retrieved from the snakegame config
     const gs = {
         isAlive: true,
-        username: username
+        username: username,
+        score: 0
     };
-    return setInterval(() => {
-        socket.emit("gameState", roomId, gs)
+    let interval = setInterval(() => {
+        socket.emit("gameState", {roomId: roomId, userState: gs});
     }, 500);
+
+    return interval;
 }
 
 // Socket emitter Function for emitting to the server that a client has joined a lobby
-export function joinGameHandler(socket, roomCode, username) {
-    socket.emit("joinGame", roomCode, username);
+export function joinGameHandler(socket, roomId, username) {
+    socket.emit("joinGame", {roomId: roomId, username: username});
 }
 
 // Socket functions for the lobby hosts
 // TODO: Event emitter for when the host presses "new game" and updates the front end with the waiting room UI
 export function newGameHandler(socket, username) {
-    socket.emit("newGame", username);
+    socket.emit("newGame", {username: username});
 }
 
 // TODO: Event emitter for when the host presses "start game"
 export function startGameHandler(socket, roomId) {
-    socket.emit("startGame", roomId);
+    socket.emit("startGame", {roomId: roomId});
 }
 
 // Temporary function for ending the snake game
-export function endGameHandler(socket, username) {
-    socket.emit("gameState", roomId, {isAlive: false, username: username});
+export function endGameHandler(socket, roomId, username) {
+    socket.emit("gameState", {roomId: roomId, userState: {isAlive: false, score:0, username: username}});
 }

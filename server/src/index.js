@@ -65,24 +65,33 @@ io.on("connection", (socket) => {
     gameStates[roomId][NUM_USERS]++;
     socket.join(roomId);
     socket.emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
+    
+    // Emit to everyone in a room that a new person has joined
+    socket.to(roomId).emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
   };
 
   const startGameHandler = (roomId) => {
-    socket.to(roomId).emit(START_GAME, gameStates[roomId])
+    console.log(roomId);
+    console.log(gameStates[roomId]);
+    io.to(roomId).emit(START_GAME, gameStates[roomId])
   }
 
   const updateGameHandler = (roomId, userState) => {
     // TODO: double check what is being sent from client side
     // potential update state design: score and is alive
     // ... 
+    console.log(roomId);
+    console.log(userState);
+
     gameStates[roomId][id][IS_ALIVE] = userState[IS_ALIVE];
     gameStates[roomId][id][SCORE] = userState[SCORE]; 
     if (!userState[IS_ALIVE]) {
       gameStates[roomId][NUM_USERS]--;
     } 
     if (gameStates[roomId][NUM_USERS] === 0) {
+      console.log("Broadcasted to: " + roomId);
       // TODO: broadcast
-      socket.to(roomId).emit(END_GAME, gameStates[roomId]); 
+      io.to(roomId).emit(END_GAME, gameStates[roomId]); 
     } else {
       socket.emit(GAME_STATE, gameStates[roomId]);
     }
@@ -91,8 +100,15 @@ io.on("connection", (socket) => {
   const disconnectHandler = (roomId) => {
     // iterate through the rooms the socket was present in
     // and update the state 
+    console.log(roomId);
+    console.log(gameStates[roomId]);
+    if(gameStates[roomId] == undefined || gameStates[roomId][id] == undefined) {
+      return;
+    }
+
     gameStates[roomId][id][IS_ALIVE] = false;
     gameStates[roomId][NUM_USERS]--;
+    
     // broadcast disconnected client to room
     if (gameStates[roomId][NUM_USERS] === 0) {
       // TODO: broadcast
