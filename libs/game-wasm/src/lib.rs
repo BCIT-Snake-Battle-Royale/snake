@@ -1,13 +1,13 @@
 // TODO: ALL CODE THAT GETS CONFERTED INTO WASM binaries gets put here
-pub use self::{ snake::* };
+pub use self::snake::*;
 
-use serde::Serialize;
 use lib_game as game;
-use wasm_bindgen::prelude::*;
 use rand::prelude::*;
+use serde::Serialize;
+use wasm_bindgen::prelude::*;
 
-mod snake;
 mod canvas;
+mod snake;
 
 #[wasm_bindgen]
 pub struct Game {
@@ -26,7 +26,7 @@ impl Game {
         let mut rng = thread_rng();
         let game = game::Game::new(config, &mut rng);
 
-        let canvas = canvas::Canvas::new("snake-canvas", 100, 100);
+        let canvas = canvas::Canvas::new("snake-canvas", 500, 500);
 
         Self { rng, game, canvas }
     }
@@ -46,7 +46,14 @@ impl Game {
 
     pub fn start(&self) {
         self.canvas.ctx.set_fill_style(&"#0000FF".into());
-        self.canvas.ctx.fill_rect(5.0, 5.0, 10.0, 10.0);
+        self.canvas.ctx.fill_rect(250.0, 250.0, 10.0, 10.0);
+    }
+
+    pub fn tick(&self, x: f64, y: f64) {
+        self.canvas.ctx.set_fill_style(&"#FFFFFF".into());
+        self.canvas.ctx.fill_rect(0.0, 0.0, 500.0, 500.0);
+        self.canvas.ctx.set_fill_style(&"#000000".into());
+        self.canvas.ctx.fill_rect(x, y, 10.0, 10.0);
     }
 }
 
