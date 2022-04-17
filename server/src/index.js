@@ -1,6 +1,7 @@
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
+import { start } from "repl";
 
 // event emitter topics
 const NEW_GAME = "newGame";
@@ -66,6 +67,10 @@ io.on("connection", (socket) => {
     socket.emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
   };
 
+  const startGameHandler = (roomId) => {
+    socket.to(roomId).emit(START_GAME, gameStates[roomId])
+  }
+
   const updateGameHandler = (roomId, userState) => {
     // TODO: double check what is being sent from client side
     // potential update state design: score and is alive
@@ -77,7 +82,7 @@ io.on("connection", (socket) => {
     } 
     if (gameStates[roomId][NUM_USERS] === 0) {
       // TODO: broadcast
-      socket.emit(END_GAME, gameStates[roomId]); 
+      socket.to(roomId).emit(END_GAME, gameStates[roomId]); 
     } else {
       socket.emit(GAME_STATE, gameStates[roomId]);
     }
@@ -87,7 +92,14 @@ io.on("connection", (socket) => {
     // iterate through the rooms the socket was present in
     // and update the state 
     gameStates[roomId][id][IS_ALIVE] = false;
-    socket.emit(GAME_STATE, gameStates[roomId])
+    gameStates[roomId][NUM_USERS]--;
+    // broadcast disconnected client to room
+    if (gameStates[roomId][NUM_USERS] === 0) {
+      // TODO: broadcast
+      socket.to(roomId).emit(END_GAME, gameStates[roomId]); 
+    } else {
+      socket.emit(GAME_STATE, gameStates[roomId]);
+    }
   } 
   
 
@@ -102,6 +114,9 @@ io.on("connection", (socket) => {
   })
 
   // start game handler and topic
+  socket.on(START_GAME, (data) => {
+    startGameHandler(data.roomId);
+  })
 
   socket.on(GAME_STATE, (data) => {
     updateGameHandler(data.roomId, data.userState)
@@ -109,14 +124,15 @@ io.on("connection", (socket) => {
 
   // TODO: test custom disconnect topic
   socket.on(EARLY_DISCONNECT, (data) => {
-
+    disconnectHandler(data.roomId);
   })
 
   // TODO: test built in disconnect topic
   socket.on("disconnect", (data) => {
      // initial data design: {roomId: _}
-    console.log("User has disconnected")
+    console.log("User has disconnected");
     // broadcast new state to everyone else in the room
+    disconnectHandler(data.roomId);
   })
 });
 
