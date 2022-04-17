@@ -1,0 +1,57 @@
+body {
+    background-image: url('Images/bg.png');
+}
+
+#rankingPage {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+#listHolderDivRankingPage {
+    color: white;
+    font-size: x-large;
+    background-color: rgba(0, 77, 97, 0.5);
+    padding: 3% 10%;
+    margin: 10px 10px 30px;
+}
+
+.liRankingPage {
+    margin: 50px 10px;
+    text-align: start;
+}
+
+/* CSS */
+#backBtnRankingPage {
+  appearance: none;
+  background-color: rgba(0, 77, 97);
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+#backBtnRankingPage:hover {
+  background-color: #2c974b;
+}
+
+#backBtnRankingPage:focus {
+  box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+  outline: none;
+}
