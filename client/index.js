@@ -43,9 +43,9 @@ socket.on("gameState", (data) => {
 })
 
 // Emit the snakeGame's gamestate twice a second to the server
-setInterval(() => {
-    socket.broadcast.emit("gameState", snakeGame.config())
-}, 500)
+// setInterval(() => {
+//     socket.broadcast.emit("gameState", snakeGame.config())
+// }, 500)
 
 // TODO: Replace player name with the player userId has inputted
 multi.updateStateHandler(snakeGame, socket, "room-code-name-here");
