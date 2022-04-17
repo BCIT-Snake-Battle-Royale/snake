@@ -1,7 +1,6 @@
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
-import { start } from "repl";
 
 // event emitter topics
 const NEW_GAME = "newGame";
@@ -30,11 +29,15 @@ const io = new Server(server, {
     origin: "*",
   }
 });
+
 const gameStates = {}
+const allClientRooms = {}
 
 io.on("connection", (socket) => {
   // every socket represents a connected client
   const id = socket.id
+  allClientRooms[id] = []
+  const clientRooms = allClientRooms[id];
   console.log("A user has connected")
 
   /* server side helper functions */
@@ -46,6 +49,7 @@ io.on("connection", (socket) => {
     // ...
     // check if username is valid (non-empty string)
     // ...
+    clientRooms.push(roomId);
     gameStates[roomId] = {};
     gameStates[roomId][id] = startingState;
     gameStates[roomId][NUM_USERS] = 1;
@@ -61,6 +65,7 @@ io.on("connection", (socket) => {
     // ...
     // check if username is taken
     // ... 
+    clientRooms.push(roomId);
     gameStates[roomId][id] = startingState;
     gameStates[roomId][NUM_USERS]++;
     socket.join(roomId);
@@ -90,7 +95,6 @@ io.on("connection", (socket) => {
     } 
     if (gameStates[roomId][NUM_USERS] === 0) {
       console.log("Broadcasted to: " + roomId);
-      // TODO: broadcast
       io.to(roomId).emit(END_GAME, gameStates[roomId]); 
     } else {
       socket.emit(GAME_STATE, gameStates[roomId]);
@@ -100,8 +104,6 @@ io.on("connection", (socket) => {
   const disconnectHandler = (roomId) => {
     // iterate through the rooms the socket was present in
     // and update the state 
-    console.log(roomId);
-    console.log(gameStates[roomId]);
     if(gameStates[roomId] == undefined || gameStates[roomId][id] == undefined) {
       return;
     }
@@ -116,6 +118,8 @@ io.on("connection", (socket) => {
     } else {
       socket.emit(GAME_STATE, gameStates[roomId]);
     }
+    console.log(roomId);
+    console.log(gameStates[roomId]);
   } 
   
 
@@ -135,20 +139,16 @@ io.on("connection", (socket) => {
   })
 
   socket.on(GAME_STATE, (data) => {
+    console.log("game state", data);
     updateGameHandler(data.roomId, data.userState)
   })
 
-  // TODO: test custom disconnect topic
-  socket.on(EARLY_DISCONNECT, (data) => {
-    disconnectHandler(data.roomId);
-  })
-
-  // TODO: test built in disconnect topic
-  socket.on("disconnect", (data) => {
-     // initial data design: {roomId: _}
-    console.log("User has disconnected");
-    // broadcast new state to everyone else in the room
-    disconnectHandler(data.roomId);
+  socket.on("disconnecting", () => {
+    console.log("disconnecting room", clientRooms);
+    clientRooms.forEach((room) => {
+      disconnectHandler(room);
+    });
+    delete allClientRooms[id];
   })
 });
 
