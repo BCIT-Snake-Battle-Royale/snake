@@ -92,12 +92,41 @@ impl Snake {
         self.head = snake::Snake::get_new_segment(self.head.x(), self.head.y(), self.direction);
     }
 
-    pub fn die_if_out_of_bounds(&mut self, grid_width: usize, grid_height: usize) {
+    pub fn die_on_out_of_bounds(&mut self, grid_width: usize, grid_height: usize) {
         // because the head's x and y are usize, any negative coordinates should overflow
         // into being positive; ergo, only checking if x/y is greater than width/height
         if self.head.x >= grid_width || self.head.y >= grid_height {
             self.is_alive = false
         }
+    }
+
+    // if the head has the same coords as any part of the tail, Die !
+    pub fn die_on_head_tail_collision(&mut self) {
+        for seg in &self.tail {
+            if self.head.x == seg.x && self.head.y == seg.y {
+                self.is_alive = false
+            }
+        }
+    }
+
+    // this can be used to check for item collision for example
+    pub fn check_head_collision(&mut self, x: usize, y: usize) -> bool {
+        if self.head.x == x && self.head.y == y {
+            return true;
+        }
+
+        return false;
+    }
+
+    // use this before placing items because items should not spawn inside of the snake
+    pub fn check_full_collision(&mut self, x: usize, y: usize) -> bool {
+        for seg in &self.tail {
+            if seg.x == x && seg.y == y {
+                return true;
+            }
+        }
+
+        return self.check_head_collision(x, y);
     }
 
     // Right now, speed update is permanent
