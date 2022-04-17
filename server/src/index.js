@@ -7,6 +7,7 @@ const NEW_GAME = "newGame";
 const JOIN_GAME = "joinGame";
 const GAME_STATE = "gameState";
 const END_GAME = "endGame";
+const EARLY_DISCONNECT = "earlyDisconnect";
 
 // messages
 const SUCCESS = "success";
@@ -79,6 +80,12 @@ io.on("connection", (socket) => {
     } 
   }
   
+  const disconnectHandler = () => {
+    // iterate through the rooms the socket was present in
+    // and update the state 
+
+  }
+  
 
   /* listening sockets */
   // TODO: match structure with client side
@@ -94,8 +101,16 @@ io.on("connection", (socket) => {
     updateGameHandler(data.roomId, data.userState)
   })
 
-  socket.on("disconnect", () => {
+  // TODO: test custom disconnect topic
+  socket.on(EARLY_DISCONNECT, (data) => {
+
+  })
+
+  // TODO: test built in disconnect topic
+   socket.on("disconnect", (data) => {
+     // initial data design: {roomId: _}
     console.log("User has disconnected")
+    // broadcast new state to everyone else in the room
   })
 });
 
