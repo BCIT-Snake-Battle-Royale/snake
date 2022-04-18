@@ -6,11 +6,27 @@
     <link rel="stylesheet" href="./index.css"/>
     <title>Snake CST</title>
     <script src="./bootstrap.js"></script>
+    <script src="./multiplayer/multiplayer.js"></script>
   </head>
   <body>
     <h1>Hello Snake team</h1>
+    <!--Temp buttons and elements for sending to the server-->
+    <h2>Nickname:</h2>
+    <input id="nickname-input" />
     <button id="new-game">New Game</button>
+    <h2>Room Id:</h2>
+    <p id="room-code"></p>
+    <h2>Room Players:</h2>
+    <p id="room-players"></p>
+    <h2>Room code input:</h2>
+    <input id="room-code-input" />
+    <button id="join-game">Join Game</button>
+    <h2>GameState:</h2>
+    <p id="game-state"></p>
     <button id="start-game">Start Game</button>
+    <button id="end-game">End Game</button>
+    <h2>Rankings</h2>
+    <p id="rankings"></p>
     <canvas id="snake-canvas"></canvas>
   </body>
 </html>
