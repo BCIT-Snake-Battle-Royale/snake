@@ -86,10 +86,17 @@ impl Snake {
        Segment::new(x, y)
     }
 
+    // adds head to the front of the tail and then creates a new head according to direction
+    // (this function should be called AFTER changing the direction of the snake)
     pub fn move_snake(&mut self) {
         self.tail.insert(0, self.head);
-        self.tail.truncate(self.score);
         self.head = snake::Snake::get_new_segment(self.head.x(), self.head.y(), self.direction);
+    }
+
+    // shrink the tail according to the user's score 
+    // (called after moving the snake, and after checking for and eating any food at the new head position)
+    pub fn truncate_tail(&mut self) {
+        self.tail.truncate(self.score);
     }
 
     pub fn die_on_out_of_bounds(&mut self, grid_width: usize, grid_height: usize) {
@@ -127,6 +134,14 @@ impl Snake {
         }
 
         return self.check_head_collision(x, y);
+    }
+
+    // i'm not exactly sure where the food pickup is?
+    // so here's an implementation of picking it up which does not require the snake to know what food is
+    pub fn eat_food_on_collision(&mut self, food_x: usize, food_y: usize) {
+        if self.check_head_collision(food_x, food_y) {
+            self.score += 1
+        }
     }
 
     // Right now, speed update is permanent
