@@ -1,0 +1,23 @@
+#game {
+    margin: auto;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+#leaderboard {
+    width: 25%;
+    margin: 0;
+    border: 1px solid black;
+}
+
+.leaderboard-row {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+    height: 20%;
+    background-color: #ecacac;
+}
+
+.leaderboard-row-even {
+    background-color: #f1d4d4;
+}
