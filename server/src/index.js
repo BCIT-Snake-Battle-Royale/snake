@@ -1,6 +1,8 @@
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
+import { SocketAddress } from "net";
+import { NIL } from "uuid";
 
 // event emitter topics
 const NEW_GAME = "newGame";
@@ -8,7 +10,6 @@ const JOIN_GAME = "joinGame";
 const GAME_STATE = "gameState";
 const START_GAME = "startGame";
 const END_GAME = "endGame";
-const EARLY_DISCONNECT = "earlyDisconnect";
 
 // messages
 const SUCCESS = "success";
@@ -16,7 +17,6 @@ const ERROR = "error";
 
 // state keys
 const SCORE = "score";
-const USERNAME = "username";
 const IS_ALIVE = "isAlive";
 const NUM_USERS = "numUsers";
 
@@ -45,46 +45,51 @@ io.on("connection", (socket) => {
       const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let id = "";
       for (let i=0; i<length; i++) {
-        let randomIndex = Math.random() * charSet.length;
+        let randomIndex = Math.floor(Math.random() * charSet.length);
         id += charSet.charAt(randomIndex);
       }
       return id;
   }
 
-  /* server side helper functions */
   const newGameHandler = (username) => {
-    let roomId = randomizeId(ROOM_ID_LEN); // needs further testing
-    while (roomId in gameStates) {
-      roomId = randomizeId(ROOM_ID_LEN);
+    // if this socket is in other rooms and is alive
+    if (clientRooms.length > 0) {
+      socket.emit(NEW_GAME, {status: ERROR, msg: "Connect to one game at a time.", state: []});
+    } else if (username.trim() === "") {
+      socket.emit(NEW_GAME, {status: ERROR, msg: "Enter a non-empty username.", state: []});
+    } else {
+      let roomId = randomizeId(ROOM_ID_LEN); 
+      while (roomId in gameStates) {
+        roomId = randomizeId(ROOM_ID_LEN);
+      }
+      const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
+      clientRooms.push(roomId);
+      gameStates[roomId] = {};
+      gameStates[roomId][id] = startingState;
+      gameStates[roomId][NUM_USERS] = 1;
+      socket.join(roomId); // this room is used for broadcasting messages
+      console.log(gameStates);
+      socket.emit(NEW_GAME, {status: SUCCESS, state: gameStates[roomId]});  
     }
-    // check if username is valid (non-empty string)
-    // ...
-
-    const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
-    clientRooms.push(roomId);
-    gameStates[roomId] = {};
-    gameStates[roomId][id] = startingState;
-    gameStates[roomId][NUM_USERS] = 1;
-    socket.join(roomId); // this room is used for broadcasting messages
-    console.log(gameStates);
-    socket.emit(NEW_GAME, {msg: SUCCESS, state: gameStates[roomId]});
   };
 
   const joinGameHandler = (roomId, username) => {
-    const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
-    // check if roomId exists, if it exists emit message on success
-    // else error message
-    // ...
-    // check if username is taken
-    // ... 
-    clientRooms.push(roomId);
-    gameStates[roomId][id] = startingState;
-    gameStates[roomId][NUM_USERS]++;
-    socket.join(roomId);
-    socket.emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
-    
-    // Emit to everyone in a room that a new person has joined
-    io.to(roomId).emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
+    if (roomId in gameStates) {
+      if (username.trim() === "") {
+        socket.emit(JOIN_GAME, {status: ERROR, msg: "Enter non-empty username.", state: []});
+      } else {
+        const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
+        clientRooms.push(roomId);
+        gameStates[roomId][id] = startingState;
+        gameStates[roomId][NUM_USERS]++;
+        socket.join(roomId);
+        socket.emit(JOIN_GAME, {status: SUCCESS, state: gameStates[roomId]});
+        // Emit to everyone in a room that a new person has joined
+        io.to(roomId).emit(JOIN_GAME, {status: SUCCESS, state: gameStates[roomId]});
+      }
+    } else {
+      socket.emit(JOIN_GAME, {status: ERROR, msg: "Enter an existing room ID.", state: []});
+    }
   };
 
   const startGameHandler = (roomId) => {
@@ -104,15 +109,14 @@ io.on("connection", (socket) => {
   }
 
   const updateGameHandler = (roomId, userState) => {
-    // TODO: double check what is being sent from client side
     console.log(roomId);
     console.log(userState);
-
     gameStates[roomId][id][IS_ALIVE] = userState[IS_ALIVE];
     gameStates[roomId][id][SCORE] = userState[SCORE]; 
     if (!userState[IS_ALIVE]) {
       gameStates[roomId][NUM_USERS]--;
     } 
+    // ends the game if there is only one living player
     endGameHandler(roomId);
   }
   
@@ -122,8 +126,7 @@ io.on("connection", (socket) => {
     }
     gameStates[roomId][id][IS_ALIVE] = false;
     gameStates[roomId][NUM_USERS]--;
-    
-    // broadcast disconnected client to room
+    // ends the game if there is only one living player
     endGameHandler(roomId);
     console.log(roomId);
     console.log(gameStates[roomId]);
@@ -131,7 +134,6 @@ io.on("connection", (socket) => {
   
 
   /* listening sockets */
-  // TODO: match structure with client side
   socket.on(NEW_GAME,  (data) => {
     newGameHandler(data.username)
   });

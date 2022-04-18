@@ -99,8 +99,10 @@ socket.on("startGame", (data) => {
 // TODO: Event listener for when the host pressed "new game"
 socket.on("newGame", (data) => {
     //socket.broadcast.emit("allowPlayerJoin", { host: data.host })
+    if (data.status === "success") {
+        setUsernames(data);
+    }
     console.log(data)
-    setUsernames(data);
 })
 
 // TODO: Event listener when the game ends/ someone has won
@@ -120,12 +122,10 @@ socket.on("gameState", (data) => {
 })
 
 socket.on("joinGame", (data) => {
+    if (data.status === "success") {
+        setUsernames(data);
+    }
     console.log(data)
-    setUsernames(data);
-});
-
-socket.on("disconnect", () => {
-    socket.emit("earlyDisconnect", roomId);
 });
 
 console.log(game.hello_world())
