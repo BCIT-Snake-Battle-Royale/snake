@@ -2,15 +2,47 @@ import * as game from "lib-game-wasm";
 import { io } from 'socket.io-client';
 import * as multi from "./multiplayer/multiplayer"
 
+// button ids
+const NEW_GAME_BTN = "new-game";
+const JOIN_GAME_BTN = "join-game";
+const START_GAME_BTN = "start-game";
+const END_GAME_BTN = "end-game";
+
+// display elements
+const NICK_INPUT = "nickname-input";
+const CODE_INPUT = "room-code-input";
+const CODE_DISPLAY = "room-code"
+const GAME_STATE_DISPLAY = "game-state";
+const PLAYERS_DISPLAY = "room-players";
+const RANKINGS_DISPLAY = "rankings";
+
+// event emitter topics
+const NEW_GAME = "newGame";
+const JOIN_GAME = "joinGame";
+const GAME_STATE = "gameState";
+const START_GAME = "startGame";
+const END_GAME = "endGame";
+
+// state object attributes
+const STATE = "state";
+const USERNAME = "username";
+const NUM_USERS = "numUsers";
+const ROOM_ID = "roomId";
+const SCORE = "score";
+const IS_ALIVE = "isAlive";
+
+// Status messages from server 
+const SUCCESS = "success";
+
 let snakeGame = new game.Game(game.Game.default_config());
 // console.log(snakeGame.config())
 // console.log(snakeGame.snake())
-const nicknameElement = document.getElementById("nickname-input");
-const roomElement = document.getElementById("room-code-input");
-const roomCodeElement = document.getElementById("room-code");
-const lobbyGameStatesElement = document.getElementById("game-state");
-const lobbyPlayersElement = document.getElementById("room-players");
-const rankingsElement = document.getElementById("rankings");
+const nicknameElement = document.getElementById(NICK_INPUT);
+const roomElement = document.getElementById(CODE_INPUT);
+const roomCodeElement = document.getElementById(CODE_DISPLAY);
+const lobbyGameStatesElement = document.getElementById(GAME_STATE_DISPLAY);
+const lobbyPlayersElement = document.getElementById(PLAYERS_DISPLAY);
+const rankingsElement = document.getElementById(RANKINGS_DISPLAY);
 const socket = io("ws://localhost:4321");
 let roomId = undefined;
 let updateInterval;
@@ -19,113 +51,102 @@ let updateInterval;
 // socket.emit("hello", { message: "world" })
 // socket.emit("gameState", snakeGame.config())
 
-document.getElementById("new-game").addEventListener("click", () => {
-    // console.log("hello")
-    //socket.emit("startGame", "startgame")
-
+// Setting event listeners for starting, joining, creating and ending games
+document.getElementById(NEW_GAME_BTN).addEventListener("click", () => {
     multi.newGameHandler(socket, nicknameElement.value);
 });
 
-document.getElementById("join-game").addEventListener("click", () => {
+document.getElementById(JOIN_GAME_BTN).addEventListener("click", () => {
     multi.joinGameHandler(socket, roomElement.value, nicknameElement.value);
 });
 
-document.getElementById("start-game").addEventListener("click", () => {
+document.getElementById(START_GAME_BTN).addEventListener("click", () => {
     console.log(roomElement.value);
     multi.startGameHandler(socket, roomId);
 });
 
-document.getElementById("end-game").addEventListener("click", () => {
+document.getElementById(END_GAME_BTN).addEventListener("click", () => {
     clearInterval(updateInterval);
     multi.endGameHandler(socket, roomId, nicknameElement.value);
 });
-/*
-Event listener structure:
-socket.on("event-type", (data-from-server) => {
-    // do something with data
-})
-*/
 
+// Everytime a user joins a room, display the roomcode and the users in that room
 const setUsernames = (data) => {
     let usernames = "";
-    const clients = data["state"];
-    delete clients["numUsers"];
+    const clients = data[STATE];
+    // Don't need to display number of users, only want the users
+    delete clients[NUM_USERS];
     let users = Object.values(clients);
 
+    // Get all nicknames from users
     for(let i = 0 ; i < users.length; i++) {
-        usernames += users[i]["username"] + " ";
+        usernames += users[i][USERNAME] + " ";
     }
 
     lobbyPlayersElement.innerHTML = usernames;
-    roomCodeElement.innerHTML = users[0]["roomId"];
-    roomId = users[0]["roomId"];
+    roomCodeElement.innerHTML = users[0][ROOM_ID];
+    roomId = users[0][ROOM_ID];
 }
 
+// Display the score and isAlive state for each players' snake game
 const displayGameState = (data) => {
     let gameStates = "";
     const clients = data;
-    delete clients["numUsers"];
+    // Don't need to display number of users, only want the users
+    delete clients[NUM_USERS];
     let users = Object.values(clients);
 
     for(let i = 0 ; i < users.length; i++) {
-        gameStates += users[i]["username"] + ", Score:" + users[i]["score"] + ", State:" + (users[i]["isAlive"] ? " alive" : "dead") + "<br />";
+        gameStates += users[i][USERNAME] + ", Score:" + users[i][SCORE] + ", State:" + (users[i][IS_ALIVE] ? " alive" : "dead") + "<br />";
     }
 
     lobbyGameStatesElement.innerHTML = gameStates;
 }
 
+// Display rankings (nickname and score) at the end when everyone has died
 const displayRankings = (data) => {
     let gameStates = "";
     const clients = data;
-    delete clients["numUsers"];
+    delete clients[NUM_USERS];
     let users = Object.values(clients);
+
+    // Sort users by scores, NOTE: has not been tested yet since the score for all users is hardcoded to 0
     users.sort((a, b) => {return a.score - b.score});
 
     for(let i = 0 ; i < users.length; i++) {
-        gameStates += (i+1) + ": " + users[i]["username"] + ", Score:" + users[i]["score"] + "<br />";
+        gameStates += (i+1) + ": " + users[i][USERNAME] + ", Score:" + users[i][SCORE] + "<br />";
     }
 
     rankingsElement.innerHTML = gameStates;
 }
 
-// TODO: Event listener for when the host pressed "start game"
-socket.on("startGame", (data) => {
-    console.log(data);
-
-    // TODO: Replace roomId and usernames with the ones retrieved from when the user joined/ started a game
+// Socket event listeners
+socket.on(START_GAME, (data) => {
     updateInterval = multi.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
 })
 
-// TODO: Event listener for when the host pressed "new game"
-socket.on("newGame", (data) => {
-    //socket.broadcast.emit("allowPlayerJoin", { host: data.host })
-    if (data.status === "success") {
+// Event listener for when the host pressed "new game"
+socket.on(NEW_GAME, (data) => {
+    if (data.status === SUCCESS) {
         setUsernames(data);
     }
-    console.log(data)
 })
 
-// TODO: Event listener when the game ends/ someone has won
-socket.on("endGame", (data) => {
-    //socket.emit("playerHasWon", { player: data.player, score: data.score })
-    console.log("gameEnded");
-    console.log(data)
+// Event listener when the game ends/ someone has won
+socket.on(END_GAME, (data) => {
     displayRankings(data);
 })
 
 // Event listener for updating game state and other player's scores/ rankings
-// TODO: Update the front-end with this data
-socket.on("gameState", (data) => {
-    console.log("gameState");
-    console.log(data)
+socket.on(GAME_STATE, (data) => {
     displayGameState(data);
 })
 
-socket.on("joinGame", (data) => {
-    if (data.status === "success") {
+// Event listener for when a user joins a lobby
+socket.on(JOIN_GAME, (data) => {
+    if (data.status === SUCCESS) {
         setUsernames(data);
     }
-    console.log(data)
 });
 
 console.log(game.hello_world())
