@@ -6,6 +6,7 @@ newGame = () => {
     let name = document.getElementById("username").value;
     if (name != "") {
         // socket.emit('startGame', { username: name });
+        document.getElementById("main-title").style.display = 'none';
         document.getElementById("username").style.display = 'none';
         document.getElementById("host-game").style.display = 'none';
         document.getElementById("room-code").style.display = 'none';
@@ -21,6 +22,7 @@ joinGame = () => {
     if (name != "" && code != "") {
         // socket.emit('joinGame', { username: name, 
         //                           roomCode: code });
+        document.getElementById("main-title").style.display = 'none';
         document.getElementById("username").style.display = 'none';
         document.getElementById("host-game").style.display = 'none';
         document.getElementById("room-code").style.display = 'none';
