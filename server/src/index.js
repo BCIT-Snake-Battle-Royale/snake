@@ -51,6 +51,16 @@ io.on("connection", (socket) => {
       return id;
   }
 
+  const isValidUsername = (roomId, aUsername) => {
+    let rooms = gameStates[roomId]
+    for (const key in rooms) {
+      if (key != NUM_USERS && aUsername === rooms[key]["username"]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   const newGameHandler = (username) => {
     // if this socket is in other rooms and is alive
     if (clientRooms.length > 0) {
@@ -68,7 +78,6 @@ io.on("connection", (socket) => {
       gameStates[roomId][id] = startingState;
       gameStates[roomId][NUM_USERS] = 1;
       socket.join(roomId); // this room is used for broadcasting messages
-      console.log(gameStates);
       socket.emit(NEW_GAME, {status: SUCCESS, state: gameStates[roomId]});  
     }
   };
@@ -77,6 +86,8 @@ io.on("connection", (socket) => {
     if (roomId in gameStates) {
       if (username.trim() === "") {
         socket.emit(JOIN_GAME, {status: ERROR, msg: "Enter non-empty username.", state: []});
+      } else if (!isValidUsername(roomId, username)) {
+        socket.emit(JOIN_GAME, {status: ERROR, msg: "Sorry, this username is taken.", state: []});
       } else {
         const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
         clientRooms.push(roomId);
@@ -93,14 +104,13 @@ io.on("connection", (socket) => {
   };
 
   const startGameHandler = (roomId) => {
-    console.log(roomId);
-    console.log(gameStates[roomId]);
+    console.log("startGameHandler", gameStates[roomId]);
     io.to(roomId).emit(START_GAME, gameStates[roomId])
   }
 
   const endGameHandler = (roomId) => {
     if (gameStates[roomId][NUM_USERS] === 0) {
-      console.log("Broadcasted to: " + roomId);
+      console.log("endGameHandler:\nBroadcasted to: " + roomId);
       io.to(roomId).emit(END_GAME, gameStates[roomId]); 
       delete gameStates[roomId];
     } else {
@@ -109,8 +119,7 @@ io.on("connection", (socket) => {
   }
 
   const updateGameHandler = (roomId, userState) => {
-    console.log(roomId);
-    console.log(userState);
+    console.log("updateGameHandler", roomId, userState);
     gameStates[roomId][id][IS_ALIVE] = userState[IS_ALIVE];
     gameStates[roomId][id][SCORE] = userState[SCORE]; 
     if (!userState[IS_ALIVE]) {
@@ -148,12 +157,12 @@ io.on("connection", (socket) => {
   })
 
   socket.on(GAME_STATE, (data) => {
-    console.log("game state", data);
+    console.log("gameState", data);
     updateGameHandler(data.roomId, data.userState)
   })
 
   socket.on("disconnecting", () => {
-    console.log("disconnecting room", clientRooms);
+    console.log("disconnecting", clientRooms);
     clientRooms.forEach((room) => {
       disconnectHandler(room);
     });
