@@ -11,8 +11,13 @@ socket.emit("gameState", snakeGame.config())
 
 document.getElementById("new-game").addEventListener("click", () => {
     // console.log("hello")
+    socket.emit("newGame", "startgame")
+})
+document.getElementById("start-game").addEventListener("click", () => {
+    // console.log("hello")
     socket.emit("startGame", "startgame")
 })
+
 /*
 Event listener structure:
 socket.on("event-type", (data-from-server) => {
@@ -24,6 +29,7 @@ socket.on("event-type", (data-from-server) => {
 socket.on("startGame", (data) => {
     // do something with data
 })
+
 // TODO: Event listener for when the host pressed "new game"
 socket.on("newGame", (data) => {
     socket.broadcast.emit("allowPlayerJoin", { host: data.host })
@@ -54,6 +60,6 @@ console.log(game.hello_world())
 console.log(game.Game.default_config())
 
 snakeGame.start();
-multi.emitGameState(snakeGame, socket, "player-name-here");
+multi.updateStateHandler(snakeGame, socket, "player-name-here");
 console.log(snakeGame.config())
 console.log(snakeGame.snake())

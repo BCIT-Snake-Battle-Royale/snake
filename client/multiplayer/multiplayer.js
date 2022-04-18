@@ -29,3 +29,7 @@ export function joinGameHandler(roomCode) {
 // TODO: Event emitter for when the host presses "new game" and updates the front end with the waiting room UI
 
 // TODO: Event emitter for when the host presses "start game"
+export function startGame() {
+    snakeGame.start();
+    socket.emit("startGame", "startGame")
+}
