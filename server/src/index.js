@@ -54,7 +54,6 @@ io.on("connection", (socket) => {
   /* server side helper functions */
   const newGameHandler = (username) => {
     let roomId = randomizeId(ROOM_ID_LEN); // needs further testing
-    // check if room exists already, otherwise generate another room name
     while (roomId in gameStates) {
       roomId = randomizeId(ROOM_ID_LEN);
     }
@@ -85,13 +84,23 @@ io.on("connection", (socket) => {
     socket.emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
     
     // Emit to everyone in a room that a new person has joined
-    socket.to(roomId).emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
+    io.to(roomId).emit(JOIN_GAME, {msg: SUCCESS, state: gameStates[roomId]});
   };
 
   const startGameHandler = (roomId) => {
     console.log(roomId);
     console.log(gameStates[roomId]);
     io.to(roomId).emit(START_GAME, gameStates[roomId])
+  }
+
+  const endGameHandler = (roomId) => {
+    if (gameStates[roomId][NUM_USERS] === 0) {
+      console.log("Broadcasted to: " + roomId);
+      io.to(roomId).emit(END_GAME, gameStates[roomId]); 
+      delete gameStates[roomId];
+    } else {
+      socket.emit(GAME_STATE, gameStates[roomId]);
+    }
   }
 
   const updateGameHandler = (roomId, userState) => {
@@ -104,29 +113,18 @@ io.on("connection", (socket) => {
     if (!userState[IS_ALIVE]) {
       gameStates[roomId][NUM_USERS]--;
     } 
-    if (gameStates[roomId][NUM_USERS] === 0) {
-      console.log("Broadcasted to: " + roomId);
-      io.to(roomId).emit(END_GAME, gameStates[roomId]); 
-    } else {
-      socket.emit(GAME_STATE, gameStates[roomId]);
-    }
+    endGameHandler(roomId);
   }
   
   const disconnectHandler = (roomId) => {
     if(gameStates[roomId] == undefined || gameStates[roomId][id] == undefined) {
       return;
     }
-
     gameStates[roomId][id][IS_ALIVE] = false;
     gameStates[roomId][NUM_USERS]--;
     
     // broadcast disconnected client to room
-    if (gameStates[roomId][NUM_USERS] === 0) {
-      // TODO: broadcast
-      io.to(roomId).emit(END_GAME, gameStates[roomId]); 
-    } else {
-      socket.emit(GAME_STATE, gameStates[roomId]);
-    }
+    endGameHandler(roomId);
     console.log(roomId);
     console.log(gameStates[roomId]);
   } 
