@@ -21,6 +21,7 @@ const IS_ALIVE = "isAlive";
 const NUM_USERS = "numUsers";
 
 const SERVER_PORT = 4321;
+const ROOM_ID_LEN = 10;
 
 const app = express();
 const server = http.createServer(app);
@@ -40,15 +41,27 @@ io.on("connection", (socket) => {
   const clientRooms = allClientRooms[id];
   console.log("A user has connected")
 
+  const randomizeId = (length) => {
+      const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let id = "";
+      for (let i=0; i<length; i++) {
+        let randomIndex = Math.random() * charSet.length;
+        id += charSet.charAt(randomIndex);
+      }
+      return id;
+  }
+
   /* server side helper functions */
   const newGameHandler = (username) => {
-    let roomId = "testRoom"; // replace with a random room name generator
-    const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
-
+    let roomId = randomizeId(ROOM_ID_LEN); // needs further testing
     // check if room exists already, otherwise generate another room name
-    // ...
+    while (roomId in gameStates) {
+      roomId = randomizeId(ROOM_ID_LEN);
+    }
     // check if username is valid (non-empty string)
     // ...
+
+    const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
     clientRooms.push(roomId);
     gameStates[roomId] = {};
     gameStates[roomId][id] = startingState;
@@ -83,8 +96,6 @@ io.on("connection", (socket) => {
 
   const updateGameHandler = (roomId, userState) => {
     // TODO: double check what is being sent from client side
-    // potential update state design: score and is alive
-    // ... 
     console.log(roomId);
     console.log(userState);
 
@@ -102,8 +113,6 @@ io.on("connection", (socket) => {
   }
   
   const disconnectHandler = (roomId) => {
-    // iterate through the rooms the socket was present in
-    // and update the state 
     if(gameStates[roomId] == undefined || gameStates[roomId][id] == undefined) {
       return;
     }
@@ -114,7 +123,7 @@ io.on("connection", (socket) => {
     // broadcast disconnected client to room
     if (gameStates[roomId][NUM_USERS] === 0) {
       // TODO: broadcast
-      socket.to(roomId).emit(END_GAME, gameStates[roomId]); 
+      io.to(roomId).emit(END_GAME, gameStates[roomId]); 
     } else {
       socket.emit(GAME_STATE, gameStates[roomId]);
     }
