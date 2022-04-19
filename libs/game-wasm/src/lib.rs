@@ -39,6 +39,11 @@ impl Game {
         JsValue::from_serde(self.game.config()).unwrap()
     }
 
+    // pub fn snake_dir(&self) -> JsValue {
+    //     let snake = self.game.snake();
+    //     snake.direction = snake.
+    // }
+
     pub fn snake(&self) -> JsValue {
         let snake = Snake::from(self.game.snake());
         JsValue::from_serde(&snake).unwrap()
