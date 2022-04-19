@@ -77,7 +77,6 @@ impl Game {
         web_sys::console::log_1(&tick_input);
 
         self.config.direction_vector = input.direction_vector;
-
         // Physics
         // Collisions
 

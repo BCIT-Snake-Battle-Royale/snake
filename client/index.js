@@ -27,23 +27,23 @@ function checkKey(e) {
 
   e = e || window.event;
 
-  if (e.keyCode == '38') {
+  if (e.keyCode == '38' || e.keyCode == '87') {
     // up
     current_dir[0] = 1
     current_dir[1] = 0
 
   }
-  else if (e.keyCode == '40') {
+  else if (e.keyCode == '40' || e.keyCode == '83') {
     // down
     current_dir[0] = 1
     current_dir[1] = 1
   }
-  else if (e.keyCode == '37') {
+  else if (e.keyCode == '37' || e.keyCode == '65') {
     // left
     current_dir[0] = 0
     current_dir[1] = 0
   }
-  else if (e.keyCode == '39') {
+  else if (e.keyCode == '39' || e.keyCode == '68') {
     // right
     current_dir[0] = 0
     current_dir[1] = 1
