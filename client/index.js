@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 let x = 250.0;
 let y = 250.0;
 let current_dir = [0, 0];
+let default_tickrate = 100;
 
 let snakeGame = new game.Game(game.Game.default_config());
 console.log(snakeGame.config())
@@ -50,31 +51,23 @@ function checkKey(e) {
 
 }
 
-setInterval(() => {
-  if (current_dir[0] === 1) {
-    switch (current_dir[1]) {
-      case 0:
-        y -= 10;
-        break;
-      case 1:
-        y += 10;
-        break;
-    }
-  } else {
-    switch (current_dir[1]) {
-      case 0:
-        x -= 10;
-        break;
-      case 1:
-        x += 10;
-        break;
-    }
-  }
+// setInterval(() => {
+//   let tickConfig = {
+//     direction_vector: current_dir,
+//   };
 
-  let tickConfig = {
-    direction_vector: current_dir,
-  };
+//   let curConfig = snakeGame.tick(tickConfig);
+//   console.log(curConfig);
+// }, 70);
 
-  let curConfig = snakeGame.tick(tickConfig);
-  console.log(curConfig);
-}, 70);
+
+
+let tickConfig
+var tick = function () {
+    tickConfig = {
+        direction_vector: current_dir,
+    };
+    let curConfig = snakeGame.tick(tickConfig);
+    setTimeout(tick, curConfig.tickrate);
+}
+setTimeout(tick, default_tickrate);

@@ -8,6 +8,7 @@ pub struct Config {
     pub segment_size: u32,
     pub snake_init_pos: (u32, u32),
     pub direction_vector: (i32, i32),
+    pub tickrate: u32,
 }
 
 impl Default for Config {
@@ -18,6 +19,7 @@ impl Default for Config {
             segment_size: 10,
             snake_init_pos: (0, 0),
             direction_vector: (1, 0),
+            tickrate: 100,
         }
     }
 }
