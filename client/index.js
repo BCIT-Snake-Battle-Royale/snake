@@ -71,5 +71,10 @@ setInterval(() => {
     }
   }
 
-  snakeGame.tick(x, y);
+  let tickConfig = {
+    direction_vector: current_dir,
+  };
+
+  let curConfig = snakeGame.tick(tickConfig);
+  console.log(curConfig);
 }, 70);

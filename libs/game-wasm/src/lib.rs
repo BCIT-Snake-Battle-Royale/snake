@@ -69,9 +69,12 @@ impl Game {
     }
 
     // Returns a state when called by client: { score, isAlive }
-    pub fn tick(&self, tick_input: TickInput) -> JsValue {
+    pub fn tick(&mut self, tick_input: JsValue) -> JsValue {
         let input: TickInput = tick_input.into_serde().unwrap();
+        // web_sys::console::log_1(input.direction_vector);
+        web_sys::console::log_1(&tick_input);
 
+        self.config.direction_vector = input.direction_vector;
 
         // Physics
         // Collisions
@@ -79,7 +82,7 @@ impl Game {
         // Render
         self.render_canvas();
 
-        JsValue::from_serde(&self.config).unwrap()
+        self.config()
     }
 }
 
