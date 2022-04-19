@@ -63,7 +63,10 @@ impl Game {
     }
 
     // Returns a state when called by client: { score, isAlive }
-    pub fn tick(&self) -> JsValue {
+    pub fn tick(&self, tick_input: TickInput) -> JsValue {
+        let input: TickInput = tick_input.into_serde().unwrap();
+
+
         // Physics
         // Collisions
 
