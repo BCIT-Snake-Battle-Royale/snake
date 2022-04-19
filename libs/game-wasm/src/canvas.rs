@@ -41,7 +41,7 @@ impl Canvas {
     }
 
     pub fn clear(&self) {
-        self.ctx.set_fill_style(&"FFFFFF".into());
+        self.ctx.set_fill_style(&"#FFFFFF".into());
         self.ctx.fill_rect(
             0.0,
             0.0,
