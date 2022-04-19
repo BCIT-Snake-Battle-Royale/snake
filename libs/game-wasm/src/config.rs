@@ -14,10 +14,10 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            grid_width: 100,
-            grid_height: 100,
+            grid_width: 500,
+            grid_height: 500,
             segment_size: 10,
-            snake_init_pos: (0, 0),
+            snake_init_pos: (250, 250),
             direction_vector: (1, 0),
             tickrate: 100,
         }

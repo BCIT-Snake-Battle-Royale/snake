@@ -24,7 +24,6 @@ impl Game {
     #[wasm_bindgen(constructor)]
     pub fn new(config: JsValue) -> Self {
         let config: Config = config.into_serde().unwrap();
-
         let mut rng = thread_rng();
 
         let canvas = canvas::Canvas::new("snake-canvas", config.grid_width, config.grid_height);
@@ -59,12 +58,15 @@ impl Game {
         // Clear canvas
         self.canvas.clear();
         // Draw snake head
-        self.canvas
-            .draw(self.snake.head.x, self.snake.head.y, "#FF0000");
+        self.canvas.draw(
+            self.snake.get_head().x(),
+            self.snake.get_head().y(),
+            "#FF0000",
+        );
         // Draw snake tail
-        for SnakeSegment { x, y } in &self.snake.tail {
-            self.canvas.draw(*x, *y, "#000000");
-        }
+        // for SnakeSegment { x, y } in &self.snake.tail {
+        //     self.canvas.draw(*x, *y, "#000000");
+        // }
     }
 
     // Returns a state when called by client: { score, isAlive }

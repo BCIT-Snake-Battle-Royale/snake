@@ -1,3 +1,4 @@
+use crate::*;
 use wasm_bindgen::JsCast;
 use web_sys::window;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
@@ -35,11 +36,16 @@ impl Canvas {
 
     pub fn draw(&self, x: u32, y: u32, color: &str) {
         self.ctx.set_fill_style(&color.into());
-        self.ctx.fill_rect(f64::from(x), f64::from(y), 10.0, 10.0);
+        self.ctx.fill_rect(
+            f64::from(x),
+            f64::from(y),
+            f64::from(config::Config::default().segment_size),
+            f64::from(config::Config::default().segment_size),
+        );
     }
 
     pub fn clear(&self) {
-        self.ctx.set_fill_style(&"FFFFF".into());
+        self.ctx.set_fill_style(&"FFFFFF".into());
         self.ctx
             .fill_rect(0.0, 0.0, f64::from(self.width), f64::from(self.height));
     }

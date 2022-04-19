@@ -64,10 +64,10 @@ function checkKey(e) {
 
 let tickConfig
 var tick = function () {
-    tickConfig = {
-        direction_vector: current_dir,
-    };
-    let curConfig = snakeGame.tick(tickConfig);
-    setTimeout(tick, curConfig.tickrate);
+  tickConfig = {
+    direction_vector: current_dir,
+  };
+  let curConfig = snakeGame.tick(tickConfig);
+  setTimeout(tick, curConfig.tickrate);
 }
 setTimeout(tick, default_tickrate);
