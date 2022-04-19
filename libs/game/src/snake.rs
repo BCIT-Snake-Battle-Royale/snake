@@ -76,14 +76,14 @@ impl Snake {
 
     // makes a segment at coordinates according to given direction
     fn get_new_segment(old_x: usize, old_y: usize, dir: Direction) -> Segment {
-       let (x, y) = match dir {
-           Direction::Up => (old_x, old_y - 1),
-           Direction::Down => (old_x, old_y + 1),
-           Direction::Left => (old_x - 1, old_y),
-           Direction::Right => (old_x + 1, old_y)
-       };
-       
-       Segment::new(x, y)
+        let (x, y) = match dir {
+            Direction::Up => (old_x, old_y - 1),
+            Direction::Down => (old_x, old_y + 1),
+            Direction::Left => (old_x - 1, old_y),
+            Direction::Right => (old_x + 1, old_y)
+        };
+        
+        Segment::new(x, y)
     }
 
     // adds head to the front of the tail and then creates a new head according to direction
