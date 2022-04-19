@@ -1,13 +1,24 @@
 // TODO: ALL CODE THAT GETS CONFERTED INTO WASM binaries gets put here
+<<<<<<< HEAD
 pub use self::snake::*;
 
+=======
+pub use self::{ snake::*, config::* };
+
+use serde::{Serialize, Deserialize};
+>>>>>>> 4f6fba75b1bd8e6c18dc39cd09cb53e6600cf16d
 use lib_game as game;
 use rand::prelude::*;
 use serde::Serialize;
 use wasm_bindgen::prelude::*;
 
 mod canvas;
+<<<<<<< HEAD
 mod snake;
+=======
+mod config;
+mod item;
+>>>>>>> 4f6fba75b1bd8e6c18dc39cd09cb53e6600cf16d
 
 #[wasm_bindgen]
 pub struct Game {
