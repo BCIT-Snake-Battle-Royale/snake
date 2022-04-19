@@ -12,7 +12,7 @@ mod snake_segment;
 // turning can only be a relative left/right
 // #[wasm_bindgen] // idrk what this line does but it was in game of life a lot but it's causing compile errors akljdh
 #[repr(u16)]
-#[derive(Debug, Serialize, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq)]
 pub enum Direction {
     Up = 0,
     Right = 90,
