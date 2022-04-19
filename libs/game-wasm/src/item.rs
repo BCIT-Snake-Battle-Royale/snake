@@ -9,7 +9,7 @@ pub enum ItemType {
     InvincibilityModifier,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Copy)]
+#[derive(Debug, Clone, Serialize, Deserialize, Copy, PartialEq)]
 pub enum SpeedEffect {
     Faster,
     Slower,

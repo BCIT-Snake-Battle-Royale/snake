@@ -38,7 +38,7 @@ impl Snake {
             direction: Direction::Up, // defaulted to up for now
             item_queue: Vec::new(),
             score: 0,
-            speed: 1,    // defaulted to 1 for now
+            speed: 10,    // defaulted to 1 for now
             invincibility_timer: 0, // Set to not invincible to start
             is_alive: true,
         }

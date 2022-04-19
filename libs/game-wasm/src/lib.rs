@@ -18,6 +18,7 @@ pub struct Game {
     canvas: canvas::Canvas,
     config: Config,
     food_item: Item,
+    has_speed_item: bool,
     speed_item: Item,
     // invincibility_item: Item,
 }
@@ -34,6 +35,7 @@ impl Game {
         let snake = Snake::new(config.snake_init_pos.0, config.snake_init_pos.1);
         let food_item = Item::new(ItemType::Food);
         let speed_item = Item::new(ItemType::SpeedModifier);
+        let has_speed_item = false;
         // let invincibility_item = Item::new(ItemType::InvincibilityModifier);
 
         Self {
@@ -42,6 +44,7 @@ impl Game {
             canvas,
             config,
             food_item,
+            has_speed_item,
             speed_item,
             // invincibility_item,
         }
@@ -81,16 +84,16 @@ impl Game {
         self.canvas.draw(
             self.food_item.get_x(),
             self.food_item.get_y(),
-            "#FF0000", // Red
+            "#FF0000", // Red (apple)
         );
         // TODO: Different colour for faster vs slower
-        // if self.speed_item {
-        //     self.canvas.draw(
-        //         self.speed_item.get_x(),
-        //         self.food_item.get_y(),
-        //         "#8E44AD" // Purple
-        //     );
-        // }
+        if self.has_speed_item {
+            self.canvas.draw(
+                self.speed_item.get_x(),
+                self.food_item.get_y(),
+                "#8E44AD" // Purple
+            );
+        }
     }
 
     // Returns a state when called by client: { score, isAlive }
@@ -105,7 +108,32 @@ impl Game {
 
         // THE COLLISION ZONE....
         self.snake.die_if_out_of_bounds(self.config.grid_width, self.config.grid_height);
-        // todo: add collision for item and food and put those things riiight here :D
+        
+        // TODO: Still need to use the check_full_collision snake method AND make sure food item and speed items not in same location
+
+        // TODO: Determine whether to show a speed item
+        // If no speed item, maybe show one (can't be too often)
+        if !self.has_speed_item {
+            // 20% of the time, show the current speed item
+            // let mut speed_rng = rand::thread_rng();
+            // let rand_float: f64 = speed_rng.gen::<f64>();
+            // if rand_float < 0.2 {
+            //     self.has_speed_item = true;
+            // }  
+        } else {
+            // If there is a speed item and there's a collision, slow down or speed up snake
+            if self.snake.get_head().x() == self.speed_item.get_x() && self.snake.get_head().y() == self.speed_item.get_y() {
+                let speed_effect: SpeedEffect = self.speed_item.get_speed_effect();
+                if speed_effect == SpeedEffect::Faster {
+
+                } else { // Else if slower
+
+                }
+                // Reset/update speed_item
+                self.has_speed_item = false;
+                self.speed_item = Item::new(ItemType::SpeedModifier);
+            }
+        }
 
         if self.snake.get_head().x() == self.food_item.get_x() && self.snake.get_head().y() == self.food_item.get_y() {
             self.food_item.random_move();
