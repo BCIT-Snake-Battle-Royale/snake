@@ -50,8 +50,7 @@ impl Game {
         self.canvas.ctx.fill_rect(250.0, 250.0, 10.0, 10.0);
     }
 
-    // Returns a state when called by client: { score, isAlive }
-    pub fn tick(&self) {
+    pub fn render_canvas(&self) {
         // Possibly move this chunk to lib-game-wasm/snake.rs
         // Clear canvas
         self.canvas.clear();
@@ -61,6 +60,17 @@ impl Game {
         for SnakeSegment { x, y } in self.snake.tail {
             self.canvas.draw(x, y, "#000000");
         }
+    }
+
+    // Returns a state when called by client: { score, isAlive }
+    pub fn tick(&self) -> JsValue {
+        // Physics
+        // Collisions
+
+        // Render
+        self.render_canvas();
+
+        JsValue::from_serde(&self.config).unwrap()
     }
 }
 
