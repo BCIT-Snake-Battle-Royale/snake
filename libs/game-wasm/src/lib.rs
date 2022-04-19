@@ -1,14 +1,14 @@
 // TODO: ALL CODE THAT GETS CONFERTED INTO WASM binaries gets put here
-pub use self::{ snake::*, config::*, item::* };
+pub use self::{config::*, item::*, snake::*};
 
-use serde::{Serialize, Deserialize};
 use rand::prelude::*;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 mod canvas;
-mod snake;
 mod config;
 mod item;
+mod snake;
 
 #[wasm_bindgen]
 pub struct Game {
@@ -16,7 +16,7 @@ pub struct Game {
     rng: ThreadRng,
     snake: Snake,
     canvas: canvas::Canvas,
-    config: Config
+    config: Config,
 }
 
 #[wasm_bindgen]
@@ -30,7 +30,12 @@ impl Game {
         let canvas = canvas::Canvas::new("snake-canvas", 100, 100);
         let snake = Snake::new(config.snake_init_pos.0, config.snake_init_pos.1);
 
-        Self { rng, snake, canvas, config }
+        Self {
+            rng,
+            snake,
+            canvas,
+            config,
+        }
     }
 
     pub fn default_config() -> JsValue {
@@ -56,10 +61,11 @@ impl Game {
         // Clear canvas
         self.canvas.clear();
         // Draw snake head
-        self.canvas.draw(self.snake.head.x, self.snake.head.y, "#FF0000");
+        self.canvas
+            .draw(self.snake.head.x, self.snake.head.y, "#FF0000");
         // Draw snake tail
-        for SnakeSegment { x, y } in self.snake.tail {
-            self.canvas.draw(x, y, "#000000");
+        for SnakeSegment { x, y } in &self.snake.tail {
+            self.canvas.draw(*x, *y, "#000000");
         }
     }
 }
