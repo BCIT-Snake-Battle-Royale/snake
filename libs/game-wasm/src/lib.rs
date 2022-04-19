@@ -1,8 +1,7 @@
 // TODO: ALL CODE THAT GETS CONFERTED INTO WASM binaries gets put here
-pub use self::{ snake::*, config::* };
+pub use self::{ snake::*, config::*, item::* };
 
 use serde::{Serialize, Deserialize};
-use lib_game as game;
 use wasm_bindgen::prelude::*;
 use rand::prelude::*;
 
@@ -15,35 +14,35 @@ mod item;
 pub struct Game {
     // Dependencies here, maybe you want random num generator?
     rng: ThreadRng,
-    game: game::Game,
+    snake: Snake,
     canvas: canvas::Canvas,
+    config: Config
 }
 
 #[wasm_bindgen]
 impl Game {
     #[wasm_bindgen(constructor)]
     pub fn new(config: JsValue) -> Self {
-        let config: game::Config = config.into_serde().unwrap();
+        let config: Config = config.into_serde().unwrap();
 
         let mut rng = thread_rng();
-        let game = game::Game::new(config, &mut rng);
 
         let canvas = canvas::Canvas::new("snake-canvas", 100, 100);
+        let snake = Snake::new(config.snake_init_pos.0, config.snake_init_pos.1);
 
-        Self { rng, game, canvas }
+        Self { rng, snake, canvas, config }
     }
 
     pub fn default_config() -> JsValue {
-        JsValue::from_serde(&game::Config::default()).unwrap()
+        JsValue::from_serde(&Config::default()).unwrap()
     }
 
     pub fn config(&self) -> JsValue {
-        JsValue::from_serde(self.game.config()).unwrap()
+        JsValue::from_serde(&self.config).unwrap()
     }
 
     pub fn snake(&self) -> JsValue {
-        let snake = Snake::from(self.game.snake());
-        JsValue::from_serde(&snake).unwrap()
+        JsValue::from_serde(&self.snake).unwrap()
     }
 
     pub fn start(&self) {
