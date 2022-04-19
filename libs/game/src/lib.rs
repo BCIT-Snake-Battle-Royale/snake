@@ -1,15 +1,11 @@
-pub use crate::{
-    snake::*,
-    config::*,
-    item::*,
-};
+pub use crate::{config::*, item::*, snake::*};
 
+use rand::{Rng, RngCore};
 use serde::{Deserialize, Serialize};
-use rand::{RngCore, Rng};
 
 mod config;
-mod snake;
 mod item;
+mod snake;
 
 pub struct Game {
     snake: Snake,
@@ -39,12 +35,10 @@ impl Game {
     }
 
     pub fn apply_item_effect(item: Item, snake: &mut Snake) {
-
         match item.item_type {
             SpeedModifier => snake.set_speed(item.get_speed_effect().try_into().unwrap()),
-            InvincibilityModifier => snake.set_is_invincible()
+            InvincibilityModifier => snake.set_is_invincible(),
         }
-
     }
 }
 

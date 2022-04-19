@@ -1,4 +1,5 @@
 use crate::*;
+pub use config::*;
 pub use item::*;
 pub use segment::*;
 
@@ -18,7 +19,7 @@ pub enum Direction {
     Left = 3,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Snake {
     head: Segment,
     tail: Vec<Segment>,
@@ -27,18 +28,18 @@ pub struct Snake {
     score: usize,
     speed: usize,
     invincibility_timer: usize, // Item team made this change
-    is_alive: bool
+    is_alive: bool,
 }
 
 impl Snake {
-    pub fn new(x: usize, y: usize) -> Self {
+    pub fn new(x: u32, y: u32) -> Self {
         Self {
             head: Segment::new(x, y),
             tail: Vec::new(),
             direction: Direction::Up, // defaulted to up for now
             item_queue: Vec::new(),
             score: 0,
-            speed: 1,    // defaulted to 1 for now
+            speed: 1,               // defaulted to 1 for now
             invincibility_timer: 0, // Set to not invincible to start
             is_alive: true,
         }
@@ -68,26 +69,55 @@ impl Snake {
         self.invincibility_timer > 0
     }
 
+    pub fn get_direction(&self) -> String {
+        let dir = format!("Moving... {:?}", self.direction);
+        return dir;
+    }
+
     // Setters below added by item team:
 
     pub fn decrement_invincibility_timer(&mut self) {
         self.invincibility_timer -= 1
     }
 
-    fn get_new_segment(old_x: usize, old_y: usize, dir: Direction) -> Segment {
-       let (x, y) = match dir {
-           Direction::Up => (old_x, old_y - 1),
-           Direction::Down => (old_x, old_y + 1),
-           Direction::Left => (old_x - 1, old_y),
-           Direction::Right => (old_x + 1, old_y)
-       };
-       
-       Segment::new(x, y)
+    fn get_new_segment(old_x: u32, old_y: u32, dir: Direction) -> Segment {
+        let segment_size = config::Config::default().snake_segment;
+        let (x, y) = match dir {
+            Direction::Up => (old_x, old_y - segment_size),
+            Direction::Down => (old_x, old_y + segment_size),
+            Direction::Left => (old_x - segment_size, old_y),
+            Direction::Right => (old_x + segment_size, old_y),
+        };
+
+        Segment::new(x, y)
     }
 
-    pub fn tick(&mut self) {        
+    // Change direction based on key event from game_wasm/lib.rs (0, 1, 2, 3)
+    pub fn change_direction(&mut self, dir: usize) {
+        let direction: Direction = match dir {
+            0 => Direction::Up,
+            1 => Direction::Right,
+            2 => Direction::Down,
+            3 => Direction::Left,
+            _ => panic!("Unknown direction: {}", dir),
+        };
+
+        if !self.opposite_direction(direction) {
+            self.direction = direction;
+        }
+    }
+
+    // Checks if the new direction input is opposite of current direction of snake
+    fn opposite_direction(&self, new_dir: Direction) -> bool {
+        return self.direction == Direction::Up && new_dir == Direction::Down
+            || self.direction == Direction::Down && new_dir == Direction::Up
+            || self.direction == Direction::Left && new_dir == Direction::Right
+            || self.direction == Direction::Right && new_dir == Direction::Left;
+    }
+
+    pub fn tick(&mut self) {
         // todo: check for key press and change direction
-        
+
         // todo: check for collision with wall and then Die
 
         // this moves the snake
@@ -108,5 +138,4 @@ impl Snake {
     // pub fn get_is_alive(&self) -> bool {
     //     self.is_invincible
     // }
-
 }

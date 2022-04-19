@@ -12,6 +12,7 @@ wasm-bindgen = { version = "0.2.79", features = ["serde-serialize"] }
 serde = { version = "1.0.136", features = ["derive"] }
 getrandom = { version = "0.2.5", features = ["js"] }
 js-sys = "0.3.56"
+gloo-events = "0.1.1"
 
 [dependencies.web-sys]
 version = "0.3.56"
@@ -21,6 +22,8 @@ features = [
   "Element",
   "HtmlCanvasElement",
   "Window",
+  "KeyboardEvent",
+  "console",
 ]
 
 

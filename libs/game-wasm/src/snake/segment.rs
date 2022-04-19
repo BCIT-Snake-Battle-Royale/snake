@@ -1,12 +1,12 @@
 use crate::*;
 
 #[derive(Debug, Clone, Serialize)]
-pub struct SnakeSegment {
-    pub x: f64,
-    pub y: f64,
+pub struct Segment {
+    pub x: u32,
+    pub y: u32,
 }
 
-impl From<&game::Segment> for SnakeSegment {
+impl From<&game::Segment> for Segment {
     fn from(snake_seg: &game::Segment) -> Self {
         Self {
             x: snake_seg.x(),

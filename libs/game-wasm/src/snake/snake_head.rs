@@ -2,8 +2,8 @@ use crate::*;
 
 #[derive(Debug, Clone, Serialize)]
 pub struct SnakeHead {
-    pub x: usize,
-    pub y: usize,
+    pub x: f64,
+    pub y: f64,
 }
 
 impl From<&game::Segment> for SnakeHead {
@@ -14,4 +14,3 @@ impl From<&game::Segment> for SnakeHead {
         }
     }
 }
-

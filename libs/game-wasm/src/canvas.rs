@@ -5,8 +5,8 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 pub struct Canvas {
     pub canvas: HtmlCanvasElement,
     pub ctx: CanvasRenderingContext2d,
-    width: u32,
-    height: u32,
+    pub width: u32,
+    pub height: u32,
 }
 
 impl Canvas {
@@ -34,5 +34,16 @@ impl Canvas {
             width,
             height,
         }
+    }
+
+    pub fn draw(&self, x: u32, y: u32, color: &str) {
+        self.ctx.set_fill_style(&color.into());
+        self.ctx.fill_rect(f64::from(x), f64::from(y), 10.0, 10.0);
+    }
+
+    pub fn clear(&self) {
+        self.ctx.set_fill_style(&"FFFFF".into());
+        self.ctx
+            .fill_rect(0.0, 0.0, f64::from(self.width), f64::from(self.height));
     }
 }
