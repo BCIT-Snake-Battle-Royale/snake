@@ -1,5 +1,5 @@
 // TODO: ALL CODE THAT GETS CONFERTED INTO WASM binaries gets put here
-pub use self::{config::*, item::*, snake::*};
+pub use self::{config::*, item::*, snake::*, item::*};
 
 use rand::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -17,6 +17,9 @@ pub struct Game {
     snake: Snake,
     canvas: canvas::Canvas,
     config: Config,
+    food_item: Item,
+    // speed_item: Item,
+    // invincibility_item: Item,
 }
 
 #[wasm_bindgen]
@@ -29,12 +32,18 @@ impl Game {
 
         let canvas = canvas::Canvas::new("snake-canvas", config.grid_width, config.grid_height);
         let snake = Snake::new(config.snake_init_pos.0, config.snake_init_pos.1);
+        let food_item = Item::new(ItemType::Food);
+        // let speed_item = Item::new(ItemType::SpeedModifier);
+        // let invincibility_item = Item::new(ItemType::InvincibilityModifier);
 
         Self {
             rng,
             snake,
             canvas,
             config,
+            food_item,
+            // speed_item,
+            // invincibility_item,
         }
     }
 
@@ -62,12 +71,26 @@ impl Game {
         self.canvas.draw(
             self.snake.get_head().x(),
             self.snake.get_head().y(),
-            "#FF0000",
+            "#008000", // Green
         );
         // Draw snake tail
         for SnakeSegment { x, y } in &self.snake.tail {
             self.canvas.draw(*x, *y, "#000000");
         }
+        // Draw food item
+        self.canvas.draw(
+            self.food_item.get_x(),
+            self.food_item.get_y(),
+            "#FF0000", // Red
+        );
+        // TODO: Different colour for faster vs slower
+        // if self.speed_item {
+        //     self.canvas.draw(
+        //         self.speed_item.get_x(),
+        //         self.food_item.get_y(),
+        //         "#8E44AD" // Purple
+        //     );
+        // }
     }
 
     // Returns a state when called by client: { score, isAlive }
@@ -83,6 +106,10 @@ impl Game {
         // THE COLLISION ZONE....
         self.snake.die_if_out_of_bounds(self.config.grid_width, self.config.grid_height);
         // todo: add collision for item and food and put those things riiight here :D
+
+        if self.snake.get_head().x() == self.food_item.get_x() && self.snake.get_head().y() == self.food_item.get_y() {
+            self.food_item.random_move();
+        }
 
         self.snake.truncate_tail();
         // change below part if invincible? not sure how invincible works 0_0
