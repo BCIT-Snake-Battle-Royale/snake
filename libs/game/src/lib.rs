@@ -11,6 +11,7 @@ mod config;
 mod snake;
 mod item;
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Game {
     snake: Snake,
     config: Config,

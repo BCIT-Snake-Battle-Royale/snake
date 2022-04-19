@@ -2,11 +2,11 @@
 pub use self::{ snake::*, config::*, item::* };
 
 use serde::{Serialize, Deserialize};
-use wasm_bindgen::prelude::*;
 use rand::prelude::*;
+use wasm_bindgen::prelude::*;
 
-mod snake;
 mod canvas;
+mod snake;
 mod config;
 mod item;
 
@@ -45,9 +45,22 @@ impl Game {
         JsValue::from_serde(&self.snake).unwrap()
     }
 
-    pub fn start(&self) {
+    pub fn start(&mut self) {
         self.canvas.ctx.set_fill_style(&"#0000FF".into());
-        self.canvas.ctx.fill_rect(5.0, 5.0, 10.0, 10.0);
+        self.canvas.ctx.fill_rect(250.0, 250.0, 10.0, 10.0);
+    }
+
+    // Returns a state when called by client: { score, isAlive }
+    pub fn tick(&self) {
+        // Possibly move this chunk to lib-game-wasm/snake.rs
+        // Clear canvas
+        self.canvas.clear();
+        // Draw snake head
+        self.canvas.draw(self.snake.head.x, self.snake.head.y, "#FF0000");
+        // Draw snake tail
+        for SnakeSegment { x, y } in self.snake.tail {
+            self.canvas.draw(x, y, "#000000");
+        }
     }
 }
 
