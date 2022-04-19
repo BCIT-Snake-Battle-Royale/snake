@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 
 let x = 250.0;
 let y = 250.0;
-let current_dir = [0, 0];
+let current_dir = 0;
 let default_tickrate = 100;
 
 let snakeGame = new game.Game(game.Game.default_config());
@@ -29,24 +29,19 @@ function checkKey(e) {
 
   if (e.keyCode == '38') {
     // up
-    current_dir[0] = 1
-    current_dir[1] = 0
-
+    current_dir = 0;
   }
   else if (e.keyCode == '40') {
     // down
-    current_dir[0] = 1
-    current_dir[1] = 1
+    current_dir = 180;
   }
   else if (e.keyCode == '37') {
     // left
-    current_dir[0] = 0
-    current_dir[1] = 0
+    current_dir = 270;
   }
   else if (e.keyCode == '39') {
     // right
-    current_dir[0] = 0
-    current_dir[1] = 1
+    current_dir = 90;
   }
 
 }

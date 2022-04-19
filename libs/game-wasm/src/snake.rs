@@ -84,11 +84,33 @@ impl Snake {
         let (x, y) = match dir {
             Direction::Up => (old_x, old_y - segment_size),
             Direction::Down => (old_x, old_y + segment_size),
-            Direction::Left => (old_x - 1, segment_size),
-            Direction::Right => (old_x + 1, segment_size),
+            Direction::Left => (old_x - segment_size, old_y),
+            Direction::Right => (old_x + segment_size, old_y),
         };
 
         SnakeSegment::new(x, y)
+    }
+
+    // Change direction based on key event from game_wasm/lib.rs (0, 1, 2, 3)
+    pub fn change_direction(&mut self, dir: i32) {
+        let direction: Direction = match dir {
+            0 => Direction::Up,
+            90 => Direction::Right,
+            180 => Direction::Down,
+            270 => Direction::Left,
+            _ => panic!("Unknown direction: {}", dir),
+        };
+
+        if !self.opposite_direction(direction) {
+            self.direction = direction;
+        }
+    }
+
+    fn opposite_direction(&self, new_dir: Direction) -> bool {
+        return self.direction == Direction::Up && new_dir == Direction::Down
+            || self.direction == Direction::Down && new_dir == Direction::Up
+            || self.direction == Direction::Left && new_dir == Direction::Right
+            || self.direction == Direction::Right && new_dir == Direction::Left;
     }
 
     // adds head to the front of the tail and then creates a new head according to direction

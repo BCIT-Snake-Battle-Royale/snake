@@ -77,9 +77,8 @@ impl Game {
         web_sys::console::log_1(&tick_input);
 
         self.config.direction_vector = input.direction_vector;
-
-        // Physics
-        // Collisions
+        self.snake.change_direction(self.config.direction_vector);
+        self.snake.move_snake();
 
         // Render
         self.render_canvas();
