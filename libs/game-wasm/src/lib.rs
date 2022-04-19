@@ -65,9 +65,9 @@ impl Game {
             "#FF0000",
         );
         // Draw snake tail
-        // for SnakeSegment { x, y } in &self.snake.tail {
-        //     self.canvas.draw(*x, *y, "#000000");
-        // }
+        for SnakeSegment { x, y } in &self.snake.tail {
+            self.canvas.draw(*x, *y, "#000000");
+        }
     }
 
     // Returns a state when called by client: { score, isAlive }
@@ -79,6 +79,14 @@ impl Game {
         self.config.direction_vector = input.direction_vector;
         self.snake.change_direction(self.config.direction_vector);
         self.snake.move_snake();
+
+        // THE COLLISION ZONE....
+        self.snake.die_if_out_of_bounds(self.config.grid_width, self.config.grid_height);
+        // todo: add collision for item and food and put those things riiight here :D
+
+        self.snake.truncate_tail();
+        // change below part if invincible? not sure how invincible works 0_0
+        self.snake.die_if_head_tail_collision();
 
         // Render
         self.render_canvas();

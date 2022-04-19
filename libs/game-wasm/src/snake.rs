@@ -126,7 +126,7 @@ impl Snake {
         self.tail.truncate(self.score);
     }
 
-    pub fn die_on_out_of_bounds(&mut self, grid_width: u32, grid_height: u32) {
+    pub fn die_if_out_of_bounds(&mut self, grid_width: u32, grid_height: u32) {
         // because the head's x and y are usize, any negative coordinates should overflow
         // into being positive; ergo, only checking if x/y is greater than width/height
         if self.head.x >= grid_width || self.head.y >= grid_height {
@@ -135,7 +135,7 @@ impl Snake {
     }
 
     // if the head has the same coords as any part of the tail, Die !
-    pub fn die_on_head_tail_collision(&mut self) {
+    pub fn die_if_head_tail_collision(&mut self) {
         for seg in &self.tail {
             if self.head.x == seg.x && self.head.y == seg.y {
                 self.is_alive = false
