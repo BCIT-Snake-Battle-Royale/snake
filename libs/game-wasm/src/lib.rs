@@ -27,7 +27,7 @@ impl Game {
 
         let mut rng = thread_rng();
 
-        let canvas = canvas::Canvas::new("snake-canvas", 100, 100);
+        let canvas = canvas::Canvas::new("snake-canvas", config.grid_width, config.grid_height);
         let snake = Snake::new(config.snake_init_pos.0, config.snake_init_pos.1);
 
         Self {
@@ -51,8 +51,7 @@ impl Game {
     }
 
     pub fn start(&mut self) {
-        self.canvas.ctx.set_fill_style(&"#0000FF".into());
-        self.canvas.ctx.fill_rect(250.0, 250.0, 10.0, 10.0);
+        self.render_canvas();
     }
 
     pub fn render_canvas(&self) {

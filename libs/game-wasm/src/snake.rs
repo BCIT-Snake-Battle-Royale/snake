@@ -79,11 +79,13 @@ impl Snake {
 
     // makes a segment at coordinates according to given direction
     fn get_new_segment(old_x: u32, old_y: u32, dir: Direction) -> SnakeSegment {
+        let segment_size = config::Config::default().segment_size;
+
         let (x, y) = match dir {
-            Direction::Up => (old_x, old_y - 1),
-            Direction::Down => (old_x, old_y + 1),
-            Direction::Left => (old_x - 1, old_y),
-            Direction::Right => (old_x + 1, old_y),
+            Direction::Up => (old_x, old_y - segment_size),
+            Direction::Down => (old_x, old_y + segment_size),
+            Direction::Left => (old_x - 1, segment_size),
+            Direction::Right => (old_x + 1, segment_size),
         };
 
         SnakeSegment::new(x, y)
