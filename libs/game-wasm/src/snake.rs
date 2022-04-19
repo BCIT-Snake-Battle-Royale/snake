@@ -27,22 +27,21 @@ pub struct Snake {
     direction: Direction,
     // item_queue: Vec<Item>,
     score: usize,
-    speed: usize,
+    speed: u32,
     invincibility_timer: usize, // Item team made this change
-    is_alive: bool
+    is_alive: bool,
 }
 
 // Private Implementation
-
 impl Snake {
-    pub fn new(x: usize, y: usize) -> Self {
+    pub fn new(x: u32, y: u32) -> Self {
         Self {
             head: SnakeSegment::new(x, y),
             tail: Vec::new(),
             direction: Direction::Up, // defaulted to up for now
             // item_queue: Vec::new(),
             score: 0,
-            speed: 1,    // defaulted to 1 for now
+            speed: 1,               // defaulted to 1 for now
             invincibility_timer: 0, // Set to not invincible to start
             is_alive: true,
         }
@@ -64,7 +63,7 @@ impl Snake {
         self.score
     }
 
-    pub fn get_speed(&self) -> usize {
+    pub fn get_speed(&self) -> u32 {
         self.speed
     }
 
@@ -79,14 +78,14 @@ impl Snake {
     }
 
     // makes a segment at coordinates according to given direction
-    fn get_new_segment(old_x: usize, old_y: usize, dir: Direction) -> SnakeSegment {
+    fn get_new_segment(old_x: u32, old_y: u32, dir: Direction) -> SnakeSegment {
         let (x, y) = match dir {
             Direction::Up => (old_x, old_y - 1),
             Direction::Down => (old_x, old_y + 1),
             Direction::Left => (old_x - 1, old_y),
-            Direction::Right => (old_x + 1, old_y)
+            Direction::Right => (old_x + 1, old_y),
         };
-        
+
         SnakeSegment::new(x, y)
     }
 
@@ -97,13 +96,13 @@ impl Snake {
         self.head = snake::Snake::get_new_segment(self.head.x(), self.head.y(), self.direction);
     }
 
-    // shrink the tail according to the user's score 
+    // shrink the tail according to the user's score
     // (called after moving the snake, and after checking for and eating any food at the new head position)
     pub fn truncate_tail(&mut self) {
         self.tail.truncate(self.score);
     }
 
-    pub fn die_on_out_of_bounds(&mut self, grid_width: usize, grid_height: usize) {
+    pub fn die_on_out_of_bounds(&mut self, grid_width: u32, grid_height: u32) {
         // because the head's x and y are usize, any negative coordinates should overflow
         // into being positive; ergo, only checking if x/y is greater than width/height
         if self.head.x >= grid_width || self.head.y >= grid_height {
@@ -121,7 +120,7 @@ impl Snake {
     }
 
     // this can be used to check for item collision for example
-    pub fn check_head_collision(&mut self, x: usize, y: usize) -> bool {
+    pub fn check_head_collision(&mut self, x: u32, y: u32) -> bool {
         if self.head.x == x && self.head.y == y {
             return true;
         }
@@ -130,7 +129,7 @@ impl Snake {
     }
 
     // use this before placing items because items should not spawn inside of the snake
-    pub fn check_full_collision(&mut self, x: usize, y: usize) -> bool {
+    pub fn check_full_collision(&mut self, x: u32, y: u32) -> bool {
         for seg in &self.tail {
             if seg.x == x && seg.y == y {
                 return true;
@@ -142,14 +141,14 @@ impl Snake {
 
     // i'm not exactly sure where the food pickup is?
     // so here's an implementation of picking it up which does not require the snake to know what food is
-    pub fn eat_food_on_collision(&mut self, food_x: usize, food_y: usize) {
+    pub fn eat_food_on_collision(&mut self, food_x: u32, food_y: u32) {
         if self.check_head_collision(food_x, food_y) {
             self.score += 1
         }
     }
 
     // Right now, speed update is permanent
-    pub fn set_speed(&mut self, speed_effect: usize) {
+    pub fn set_speed(&mut self, speed_effect: u32) {
         self.speed += speed_effect
     }
 
@@ -161,15 +160,11 @@ impl Snake {
     // pub fn get_is_alive(&self) -> bool {
     //     self.is_invincible
     // }
-
 }
 
 // Public Wasm implementation
 #[wasm_bindgen]
-impl Snake {
-
-}
-
+impl Snake {}
 
 // impl From<&game::Snake> for Snake {
 //     fn from(snake: &game::Snake) -> Self {
@@ -178,7 +173,7 @@ impl Snake {
 //             .iter()
 //             .map(SnakeSegment::from)
 //             .collect();
-        
+
 //         let head = SnakeHead::from(snake.get_head());
 
 //         Self { head, segments }
