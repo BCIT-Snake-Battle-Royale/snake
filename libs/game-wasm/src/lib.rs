@@ -23,6 +23,7 @@ pub struct Game {
 impl Game {
     #[wasm_bindgen(constructor)]
     pub fn new(config: JsValue) -> Self {
+        web_sys::console::log_1(&config);
         let config: Config = config.into_serde().unwrap();
         let mut rng = thread_rng();
 
