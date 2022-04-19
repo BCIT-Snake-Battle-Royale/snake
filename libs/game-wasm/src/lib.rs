@@ -18,7 +18,7 @@ pub struct Game {
     canvas: canvas::Canvas,
     config: Config,
     food_item: Item,
-    // speed_item: Item,
+    speed_item: Item,
     // invincibility_item: Item,
 }
 
@@ -33,7 +33,7 @@ impl Game {
         let canvas = canvas::Canvas::new("snake-canvas", config.grid_width, config.grid_height);
         let snake = Snake::new(config.snake_init_pos.0, config.snake_init_pos.1);
         let food_item = Item::new(ItemType::Food);
-        // let speed_item = Item::new(ItemType::SpeedModifier);
+        let speed_item = Item::new(ItemType::SpeedModifier);
         // let invincibility_item = Item::new(ItemType::InvincibilityModifier);
 
         Self {
@@ -42,7 +42,7 @@ impl Game {
             canvas,
             config,
             food_item,
-            // speed_item,
+            speed_item,
             // invincibility_item,
         }
     }
@@ -75,7 +75,7 @@ impl Game {
         );
         // Draw snake tail
         for SnakeSegment { x, y } in &self.snake.tail {
-            self.canvas.draw(*x, *y, "#000000");
+            self.canvas.draw(*x, *y, "#008000");
         }
         // Draw food item
         self.canvas.draw(
@@ -109,6 +109,7 @@ impl Game {
 
         if self.snake.get_head().x() == self.food_item.get_x() && self.snake.get_head().y() == self.food_item.get_y() {
             self.food_item.random_move();
+            self.snake.increment_score();
         }
 
         self.snake.truncate_tail();

@@ -59,6 +59,10 @@ impl Snake {
     //     &self.item_queue
     // }
 
+    pub fn increment_score(&mut self) {
+        self.score += 1
+    }
+
     pub fn get_score(&self) -> usize {
         self.score
     }
@@ -165,11 +169,11 @@ impl Snake {
 
     // i'm not exactly sure where the food pickup is?
     // so here's an implementation of picking it up which does not require the snake to know what food is
-    pub fn eat_food_on_collision(&mut self, food_x: u32, food_y: u32) {
-        if self.check_head_collision(food_x, food_y) {
-            self.score += 1
-        }
-    }
+    // pub fn eat_food_on_collision(&mut self, food_x: u32, food_y: u32) {
+    //     if self.check_head_collision(food_x, food_y) {
+    //         self.score += 1
+    //     }
+    // }
 
     // Right now, speed update is permanent
     pub fn set_speed(&mut self, speed_effect: u32) {
