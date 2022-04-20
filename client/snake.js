@@ -9,7 +9,7 @@ const sampleData = { "user1": { isAlive: true, score: 7 }, "user2": { isAlive: t
 //});
 //socket.on('disconnect', function () { });
 
-function startGame() {
+startGame = () => {
     document.getElementById("lobby").style.display = "none";
     showRankingPage(sampleData);
     // TODO: 
