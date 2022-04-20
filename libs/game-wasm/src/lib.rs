@@ -136,7 +136,7 @@ impl Game {
         }
 
         if self.snake.check_head_collision(self.food_item.get_x(), self.food_item.get_y()) {
-            self.food_item.random_move(&mut self.snake);
+            self.food_item.random_move(&mut self.snake, vec![self.speed_item]);
             self.snake.increment_score();
         }
 

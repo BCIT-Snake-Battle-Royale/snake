@@ -38,7 +38,7 @@ fn random_speed_effect(item_type: ItemType) -> SpeedEffect {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Copy)]
 pub struct Item {
     pub item_type: ItemType,
     pub x: u32,
@@ -86,7 +86,21 @@ impl Item {
         self.item_type
     }
 
-    pub fn random_move(&mut self, snake: &mut snake::Snake) {
+    pub fn check_collision(&self, x: u32, y: u32) -> bool {
+        self.x == x && self.y == y
+    }
+
+    fn check_item_vec_collision(&self, items: &Vec<Item>) -> bool {
+        for item in items {
+            if self.check_collision(item.x, item.y) {
+                return true;
+            } 
+        }
+
+        return false;
+    }
+
+    pub fn random_move(&mut self, snake: &mut snake::Snake, items: Vec<Item>) {
         self.x = get_random_val();
         self.y = get_random_val();
 
@@ -97,7 +111,7 @@ impl Item {
         let ph_x = self.x;
         let ph_y = self.y;
 
-        while snake.check_full_collision(self.x, self.y) {
+        while snake.check_full_collision(self.x, self.y) || self.check_item_vec_collision(&items) {
             // check the next spot to the right of the random spot (or wrap around grid if no spots to the right are available)
             self.x = (self.x + segment_size) % grid_width;
             
@@ -108,7 +122,7 @@ impl Item {
 
             // this is hit if every single spot in the board is occupied (at which point it gives up and stops trying)
             if self.y == ph_y {
-                return;
+                break;
             }
         }
     }
