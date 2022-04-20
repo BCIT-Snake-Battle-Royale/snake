@@ -86,8 +86,30 @@ impl Item {
         self.item_type
     }
 
-    pub fn random_move(&mut self) {
+    pub fn random_move(&mut self, snake: &mut snake::Snake) {
         self.x = get_random_val();
         self.y = get_random_val();
+
+        let segment_size = config::Config::default().segment_size;
+        let grid_width = config::Config::default().grid_width;
+        let grid_height = config::Config::default().grid_height;
+
+        let ph_x = self.x;
+        let ph_y = self.y;
+
+        while snake.check_full_collision(self.x, self.y) {
+            // check the next spot to the right of the random spot (or wrap around grid if no spots to the right are available)
+            self.x = (self.x + segment_size) % grid_width;
+            
+            // if all spots on a given row are occupied, go down a row (or wrap around)
+            if self.x == ph_x {
+                self.y = (self.y + segment_size) % grid_height;
+            }
+
+            // this is hit if every single spot in the board is occupied (at which point it gives up and stops trying)
+            if self.y == ph_y {
+                return;
+            }
+        }
     }
 }

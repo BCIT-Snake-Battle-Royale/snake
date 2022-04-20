@@ -122,7 +122,7 @@ impl Game {
             // }  
         } else {
             // If there is a speed item and there's a collision, slow down or speed up snake
-            if self.snake.get_head().x() == self.speed_item.get_x() && self.snake.get_head().y() == self.speed_item.get_y() {
+            if self.snake.check_head_collision(self.speed_item.get_x(), self.speed_item.get_y()) {
                 let speed_effect: SpeedEffect = self.speed_item.get_speed_effect();
                 if speed_effect == SpeedEffect::Faster {
 
@@ -135,8 +135,8 @@ impl Game {
             }
         }
 
-        if self.snake.get_head().x() == self.food_item.get_x() && self.snake.get_head().y() == self.food_item.get_y() {
-            self.food_item.random_move();
+        if self.snake.check_head_collision(self.food_item.get_x(), self.food_item.get_y()) {
+            self.food_item.random_move(&mut self.snake);
             self.snake.increment_score();
         }
 
