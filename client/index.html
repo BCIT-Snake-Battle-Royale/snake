@@ -9,21 +9,39 @@
 </head>
 
 <body>
-    <div class="main-div">
+    <div id="main-div">
         <h1 id="main-title">WELCOME TO SNAKE</h1>
         <div>
-            <input class="main-input" type="text" id="username" placeholder="Enter Username">
+            <input class="main-input" type="text" id="nickname-input" placeholder="Enter Username">
         </div>
         <div>
             <button class="main-button" id="new-game" type="button">Host Game</button>
         </div>
         <div>
-            <input class="main-input" type="text" id="room-code" placeholder="Enter Room Code">
+            <input class="main-input" type="text" id="room-code-input" placeholder="Enter Room Code">
         </div>
         <div>
             <button class="main-button" id="join-game" type="button">Join Game</button>
         </div>
     </div>
+    <div id="lobby">
+
+      <div id="roomCodeContainerLobby">
+          <p>Room Code:</p>
+          <p id="roomCodeLobby">1234</p>
+      </div>
+
+      <div id="playersContainerLobby">
+          <li>Daniel</li>
+          <li>David</li>
+          <li>Jason</li>
+          <li>Sam</li>
+      </div>
+
+      <div class="startGameButtonContainerLobby">
+          <button id="start-game">Start Game</button>
+      </div>
+  </div>
 
 </body>
 

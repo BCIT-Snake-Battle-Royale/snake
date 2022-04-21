@@ -1,0 +1,34 @@
+#lobby {
+  display: none;
+}
+
+#roomCodeContainerLobby {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+
+#playersContainerLobby {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#playersContainerLobby li {
+  padding-left: 1rem;
+  text-indent: -0.75rem;
+}
+
+#playersContainerLobby li::before {
+  content: "🐍";
+}
+
+#startGameButtonContainerLobby {
+  text-align: center;
+}
+
+#startGameButtonLobby {
+  position: fixed;
+  bottom: 0;
+}
