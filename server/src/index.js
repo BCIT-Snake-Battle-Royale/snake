@@ -141,7 +141,6 @@ io.on("connection", (socket) => {
     console.log(gameStates[roomId]);
   } 
   
-
   /* listening sockets */
   socket.on(NEW_GAME,  (data) => {
     newGameHandler(data.username)

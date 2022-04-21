@@ -2,7 +2,7 @@
   "name": "snake-wasm",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "start": "webpack serve"

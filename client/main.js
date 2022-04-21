@@ -2,8 +2,9 @@
 
 // const socket = io('http://localhost:4321');
 
-newGame = () => {
+const newGame = () => {
     let name = document.getElementById("username").value;
+    console.log(name)
     if (name != "") {
         // socket.emit('startGame', { username: name });
         document.getElementById("main-title").style.display = 'none';
@@ -16,7 +17,9 @@ newGame = () => {
     }
 }
 
-joinGame = () => {
+document.getElementById('host-game').addEventListener("click", newGame);
+
+export const joinGame = () => {
     let name = document.getElementById("username").value;
     let code = document.getElementById("room-code").value;
     if (name != "" && code != "") {

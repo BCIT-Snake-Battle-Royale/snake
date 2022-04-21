@@ -18,7 +18,7 @@ function startGame() {
     // - Clear socket?
 }
 
-newGame = () => {
+const newGame = () => {
     let name = document.getElementById("username").value;
     if (name != "") {
         // socket.emit('startGame', { username: name });
@@ -36,7 +36,7 @@ newGame = () => {
     }
 }
 
-joinGame = () => {
+const joinGame = () => {
     const landing = document.getElementById("landing");
     const lobby = document.getElementById("lobby");
     let name = document.getElementById("username").value;
@@ -56,7 +56,7 @@ joinGame = () => {
     }
 }
 
-hideRankingPage = () => {
+const hideRankingPage = () => {
 
     document.getElementById("rankingPage").style.display = "none";
     document.getElementById("landing").style.display = "inherit";
@@ -67,7 +67,7 @@ hideRankingPage = () => {
     document.getElementById("join-game").style.display = "block";
 }
 
-showRankingPage = (playersStats) => {
+const showRankingPage = (playersStats) => {
     const rankingPage = document.getElementById("rankingPage");
     const listRankingPage = document.getElementById("listRankingPage");
 

@@ -1,6 +1,6 @@
 import * as game from "lib-game-wasm";
 import { io } from 'socket.io-client';
-import * as multi from "./multiplayer/multiplayer"
+import * as multiplayer from "./multiplayer/multiplayer"
 
 // button ids
 const NEW_GAME_BTN = "new-game";
@@ -11,7 +11,7 @@ const END_GAME_BTN = "end-game";
 // display elements
 const NICK_INPUT = "nickname-input";
 const CODE_INPUT = "room-code-input";
-const CODE_DISPLAY = "room-code"
+const CODE_DISPLAY = "room-code";
 const GAME_STATE_DISPLAY = "game-state";
 const PLAYERS_DISPLAY = "room-players";
 const RANKINGS_DISPLAY = "rankings";
@@ -53,21 +53,22 @@ let updateInterval;
 
 // Setting event listeners for starting, joining, creating and ending games
 document.getElementById(NEW_GAME_BTN).addEventListener("click", () => {
-    multi.newGameHandler(socket, nicknameElement.value);
+    console.log(nicknameElement.value)
+    multiplayer.newGameHandler(socket, nicknameElement.value);
 });
 
 document.getElementById(JOIN_GAME_BTN).addEventListener("click", () => {
-    multi.joinGameHandler(socket, roomElement.value, nicknameElement.value);
+    multiplayer.joinGameHandler(socket, roomElement.value, nicknameElement.value);
 });
 
 document.getElementById(START_GAME_BTN).addEventListener("click", () => {
     console.log(roomElement.value);
-    multi.startGameHandler(socket, roomId);
+    multiplayer.startGameHandler(socket, roomId);
 });
 
 document.getElementById(END_GAME_BTN).addEventListener("click", () => {
     clearInterval(updateInterval);
-    multi.endGameHandler(socket, roomId, nicknameElement.value);
+    multiplayer.endGameHandler(socket, roomId, nicknameElement.value);
 });
 
 // Everytime a user joins a room, display the roomcode and the users in that room
@@ -122,7 +123,7 @@ const displayRankings = (data) => {
 
 // Socket event listeners
 socket.on(START_GAME, (data) => {
-    updateInterval = multi.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
+    updateInterval = multiplayer.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
 })
 
 // Event listener for when the host pressed "new game"
@@ -130,12 +131,12 @@ socket.on(NEW_GAME, (data) => {
     if (data.status === SUCCESS) {
         setUsernames(data);
     }
-})
+});
 
 // Event listener when the game ends/ someone has won
 socket.on(END_GAME, (data) => {
     displayRankings(data);
-})
+});
 
 // Event listener for updating game state and other player's scores/ rankings
 socket.on(GAME_STATE, (data) => {

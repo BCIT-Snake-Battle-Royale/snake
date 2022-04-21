@@ -13,6 +13,7 @@ export function updateStateHandler(snakeGame, socket, roomId, username) {
         score: 0
     };
     let interval = setInterval(() => {
+        console.log(roomId)
         socket.emit("gameState", {roomId: roomId, userState: gs});
     }, 500);
 
