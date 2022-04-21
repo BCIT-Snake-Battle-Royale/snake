@@ -24,6 +24,20 @@ impl Default for Config {
     }
 }
 
+impl Config {
+    pub fn decrease_speed(&mut self) {
+        if (self.tickrate - 25) >= 10 {
+            self.tickrate += 25
+        }
+    }
+
+    pub fn increase_speed(&mut self) {
+        if (self.tickrate - 25) >= 10 {
+            self.tickrate -= 25
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TickInput {

@@ -94,11 +94,19 @@ impl Game {
         );
         // TODO: Different colour for faster vs slower
         if self.has_speed_item {
-            self.canvas.draw(
-                self.speed_item.get_x(),
-                self.speed_item.get_y(),
-                "#8E44AD" // Purple
-            );
+            if self.speed_item.get_speed_effect() == SpeedEffect::Slower {
+                self.canvas.draw(
+                    self.speed_item.get_x(),
+                    self.speed_item.get_y(),
+                    "#c48adb" // Light purple for slower
+                );
+            } else {
+                self.canvas.draw(
+                    self.speed_item.get_x(),
+                    self.speed_item.get_y(),
+                    "#452761" // Dark purple for faster
+                );
+            }
         }
         if self.has_bomb_item {
             self.canvas.draw(
@@ -124,8 +132,8 @@ impl Game {
 
         // If no speed item, maybe show one (can't be too often)
         if !self.has_speed_item {
-            // 1% of the time, show the current speed item
-            let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
+            // 10% of the time, show the current speed item
+            let rand_int: u32 = rand::thread_rng().gen_range(0..100);
             if rand_int < 10 {
                 self.has_speed_item = true;
             }  
@@ -134,14 +142,13 @@ impl Game {
             if self.snake.check_head_collision(self.speed_item.get_x(), self.speed_item.get_y()) {
                 let speed_effect: SpeedEffect = self.speed_item.get_speed_effect();
                 if speed_effect == SpeedEffect::Faster {
-
+                    self.config.increase_speed();
                 } else { // Else if slower
-
+                    self.config.decrease_speed();
                 }
                 // Reset/update speed_item
                 self.has_speed_item = false;
                 self.speed_item.random_move(&mut self.snake, vec![self.speed_item]);
-                // self.speed_item = Item::new(ItemType::SpeedModifier);
             }
         }
 
@@ -154,7 +161,7 @@ impl Game {
             }  
         } else {
             // TODO: If there is a speed item already and there's a collision, kill the snake
-            if self.snake.check_head_collision(self.speed_item.get_x(), self.speed_item.get_y()) {
+            if self.snake.check_head_collision(self.bomb_item.get_x(), self.bomb_item.get_y()) {
 
             }
         }

@@ -31,7 +31,7 @@ fn get_random_val(item_type: ItemType) -> u32 {
 // If item type is SpeedModifier, randomly set speef effect to faster or slower, else set to none
 fn random_speed_effect(item_type: ItemType) -> SpeedEffect {
     if item_type == ItemType::SpeedModifier {
-        let val: u32 = rand::thread_rng().gen_range(0..2);
+        let val: u32 = rand::thread_rng().gen_range(0..1);
         if val == 0 {
             SpeedEffect::Faster
         } else {

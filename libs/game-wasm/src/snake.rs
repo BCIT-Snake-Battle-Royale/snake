@@ -20,6 +20,13 @@ pub enum Direction {
     Left = 270,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, Copy, PartialEq)]
+pub enum SpeedEffect {
+    Faster,
+    Slower,
+    None,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct Snake {
     pub head: SnakeSegment,
@@ -27,7 +34,7 @@ pub struct Snake {
     direction: Direction,
     // item_queue: Vec<Item>,
     score: usize,
-    speed: u32,
+    speed_effect: SpeedEffect,
     invincibility_timer: usize, // Item team made this change
     is_alive: bool,
 }
@@ -41,7 +48,7 @@ impl Snake {
             direction: Direction::Up, // defaulted to up for now
             // item_queue: Vec::new(),
             score: 0,
-            speed: 1,               // defaulted to 1 for now
+            speed_effect: SpeedEffect::None,
             invincibility_timer: 0, // Set to not invincible to start
             is_alive: true,
         }
@@ -67,8 +74,8 @@ impl Snake {
         self.score
     }
 
-    pub fn get_speed(&self) -> u32 {
-        self.speed
+    pub fn get_speed_effect(&self) -> SpeedEffect {
+        self.speed_effect
     }
 
     pub fn get_is_invincible(&self) -> bool {
@@ -175,9 +182,9 @@ impl Snake {
     //     }
     // }
 
-    // Right now, speed update is permanent
-    pub fn set_speed(&mut self, speed_effect: u32) {
-        self.speed += speed_effect
+    // Right now, speed effect is permanent
+    pub fn set_speed_effect(&mut self, new_speed_effect: SpeedEffect) {
+        self.speed_effect = new_speed_effect
     }
 
     pub fn set_is_invincible(&mut self) {
