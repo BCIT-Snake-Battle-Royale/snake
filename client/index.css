@@ -24,11 +24,15 @@
   content: "🐍";
 }
 
-#startGameButtonContainerLobby {
+.startGameButtonContainerLobby {
   text-align: center;
 }
 
-#startGameButtonLobby {
+#start-game {
   position: fixed;
   bottom: 0;
+}
+
+#snake-canvas {
+  display: none;
 }

@@ -34,7 +34,7 @@ const IS_ALIVE = "isAlive";
 // Status messages from server 
 const SUCCESS = "success";
 
-// // let snakeGame = new game.Game(game.Game.default_config());
+let snakeGame = new game.Game(game.Game.default_config());
 // // console.log(snakeGame.config())
 // // console.log(snakeGame.snake())
 const nicknameElement = document.getElementById(NICK_INPUT);
@@ -76,6 +76,9 @@ document.getElementById(JOIN_GAME_BTN).addEventListener("click", () => {
 document.getElementById(START_GAME_BTN).addEventListener("click", () => {
     console.log(roomElement.value);
     multiplayer.startGameHandler(socket, roomId);
+    snakeGame.start();
+    document.getElementById("lobby").style.display = 'none';
+    document.getElementById("snake-canvas").style.display = 'initial';
 });
 
 // document.getElementById(END_GAME_BTN).addEventListener("click", () => {
@@ -165,6 +168,6 @@ document.getElementById(START_GAME_BTN).addEventListener("click", () => {
 // console.log(game.hello_world())
 // console.log(game.Game.default_config())
 
-// // snakeGame.start();
+snakeGame.start();
 // // console.log(snakeGame.config())
 // // console.log(snakeGame.snake())
