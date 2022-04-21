@@ -22,7 +22,8 @@ pub struct Game {
     speed_item: Item,
     has_bomb_item: bool,
     bomb_item: Item,
-    // invincibility_item: Item,
+    has_invincibility_item: bool,
+    invincibility_item: Item,
 }
 
 #[wasm_bindgen]
@@ -40,7 +41,8 @@ impl Game {
         let has_speed_item = false;
         let has_bomb_item = false;
         let bomb_item = Item::new(ItemType::Bomb);
-        // let invincibility_item = Item::new(ItemType::InvincibilityModifier);
+        let has_invincibility_item = false;
+        let invincibility_item = Item::new(ItemType::InvincibilityModifier);
 
         Self {
             rng,
@@ -52,7 +54,8 @@ impl Game {
             speed_item,
             has_bomb_item,
             bomb_item,
-            // invincibility_item,
+            has_invincibility_item,
+            invincibility_item,
         }
     }
 
@@ -115,6 +118,13 @@ impl Game {
                 "#000000" // Black
             );
         }
+        if self.has_invincibility_item {
+            self.canvas.draw(
+                self.invincibility_item.get_x(),
+                self.invincibility_item.get_y(),
+                "#c2962f" // Gold
+            );
+        }
     }
 
     // Returns a state when called by client: { score, isAlive }
@@ -126,6 +136,10 @@ impl Game {
         self.config.direction_vector = input.direction_vector;
         self.snake.change_direction(self.config.direction_vector);
         self.snake.move_snake();
+
+        if self.snake.is_invincible() {
+            self.snake.decrement_invincibility_timer()
+        }
 
         // THE COLLISION ZONE....
         self.snake.die_if_out_of_bounds(self.config.grid_width, self.config.grid_height);
@@ -163,6 +177,20 @@ impl Game {
             // TODO: If there is a speed item already and there's a collision, kill the snake
             if self.snake.check_head_collision(self.bomb_item.get_x(), self.bomb_item.get_y()) {
 
+            }
+        }
+
+        // If no invincibility item, maybe show one (can't be too often)
+        if !self.has_invincibility_item {
+            // 1% of the time, show the current speed item
+            let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
+            if rand_int < 10 {
+                self.has_invincibility_item = true;
+            }  
+        } else {
+            // TODO: If there is a speed item already and there's a collision, kill the snake
+            if self.snake.check_head_collision(self.invincibility_item.get_x(), self.invincibility_item.get_y()) {
+                self.snake.set_is_invincible();
             }
         }
 

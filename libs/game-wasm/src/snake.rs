@@ -35,7 +35,7 @@ pub struct Snake {
     // item_queue: Vec<Item>,
     score: usize,
     speed_effect: SpeedEffect,
-    invincibility_timer: usize, // Item team made this change
+    invincibility_timer: u32,
     is_alive: bool,
 }
 
@@ -78,8 +78,16 @@ impl Snake {
         self.speed_effect
     }
 
-    pub fn get_is_invincible(&self) -> bool {
-        self.invincibility_timer > 0
+    pub fn decrement_invinsibility_timer(&mut self) {
+        self.invincibility_timer -= 1
+    }
+
+    pub fn is_invincible(&self) -> bool {
+        return self.invincibility_timer >= 0
+    }
+
+    pub fn set_invincible(&mut self) {
+        self.invincibility_timer = 1000;
     }
 
     // Setters below added by item team:
