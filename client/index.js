@@ -15,6 +15,14 @@ const CODE_DISPLAY = "room-code"
 const GAME_STATE_DISPLAY = "game-state";
 const PLAYERS_DISPLAY = "room-players";
 const RANKINGS_DISPLAY = "rankings";
+const WAITING_MSG = "waiting-msg";
+const ERROR_MSG = "error-msg";
+
+// divs
+const LANDING_DIV = "landing-div";
+const LOBBY_DIV = "lobby-div";
+const GAME_DIV = "game-div";
+const RANKING_DIV = "ranking-div";
 
 // event emitter topics
 const NEW_GAME = "newGame";
@@ -34,7 +42,7 @@ const IS_ALIVE = "isAlive";
 // Status messages from server 
 const SUCCESS = "success";
 
-let snakeGame = new game.Game(game.Game.default_config());
+// let snakeGame = new game.Game(game.Game.default_config());   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // console.log(snakeGame.config())
 // console.log(snakeGame.snake())
 const nicknameElement = document.getElementById(NICK_INPUT);
@@ -54,10 +62,16 @@ let updateInterval;
 // Setting event listeners for starting, joining, creating and ending games
 document.getElementById(NEW_GAME_BTN).addEventListener("click", () => {
     multi.newGameHandler(socket, nicknameElement.value);
+    document.getElementById(START_GAME_BTN).style.display='block';
+    document.getElementById(WAITING_MSG).style.display='none';
+    document.getElementById(END_GAME_BTN).style.display='block';
 });
 
 document.getElementById(JOIN_GAME_BTN).addEventListener("click", () => {
     multi.joinGameHandler(socket, roomElement.value, nicknameElement.value);
+    document.getElementById(START_GAME_BTN).style.display='none';
+    document.getElementById(WAITING_MSG).style.display='block';
+    document.getElementById(END_GAME_BTN).style.display='none';
 });
 
 document.getElementById(START_GAME_BTN).addEventListener("click", () => {
@@ -122,18 +136,27 @@ const displayRankings = (data) => {
 
 // Socket event listeners
 socket.on(START_GAME, (data) => {
+    document.getElementById(LOBBY_DIV).style.display='none';
+    document.getElementById(GAME_DIV).style.display='block';
     updateInterval = multi.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
 })
 
 // Event listener for when the host pressed "new game"
 socket.on(NEW_GAME, (data) => {
+    console.log(data);
     if (data.status === SUCCESS) {
+        document.getElementById(LANDING_DIV).style.display='none'; // Hide landing Div
+        document.getElementById(LOBBY_DIV).style.display='block';
         setUsernames(data);
+    } else {
+        document.getElementById(ERROR_MSG).innerHTML = data.msg;
     }
 })
 
 // Event listener when the game ends/ someone has won
 socket.on(END_GAME, (data) => {
+    document.getElementById(GAME_DIV).style.display='none';
+    document.getElementById(RANKINGS_DISPLAY).style.display='block';
     displayRankings(data);
 })
 
@@ -145,7 +168,11 @@ socket.on(GAME_STATE, (data) => {
 // Event listener for when a user joins a lobby
 socket.on(JOIN_GAME, (data) => {
     if (data.status === SUCCESS) {
+        document.getElementById(LANDING_DIV).style.display='none'; // Hide landing Div
+        document.getElementById(LOBBY_DIV).style.display='block';
         setUsernames(data);
+    } else {
+        document.getElementById(ERROR_MSG).innerHTML = data.msg;
     }
 });
 

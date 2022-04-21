@@ -3,14 +3,75 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="./multiplayer/multiplayer.js"></script> -->
     <link rel="stylesheet" href="./index.css"/>
     <title>Snake CST</title>
     <script src="./bootstrap.js"></script>
-    <script src="./multiplayer/multiplayer.js"></script>
+    <!-- <script src="./index.js"></script> -->
   </head>
   <body>
+    <div id="landing-div" class="main-div" >
+        <h1 id="main-title">WELCOME TO SNAKE</h1>
+        <div>
+            <input class="main-input" type="text" id="nickname-input" placeholder="Enter Username">
+        </div>
+        <div>
+            <button class="main-button" id="new-game" type="button">Host Game</button>
+        </div>
+        <div>
+            <input class="main-input" type="text" id="room-code-input" placeholder="Enter Room Code">
+        </div>
+        <div>
+            <button class="main-button" id="join-game" type="button">Join Game</button>
+        </div>
+        <p id="error-msg"></p>
+    </div>
+
+    <div id="lobby-div" style="display:none;" class="lobby-div">
+
+        <div id="roomCodeContainerLobby">
+            <p>Room Code:</p>
+            <p id="room-code"></p>
+        </div>
+
+        <div id="listHolderDivLobby">
+          <p id="room-players"></p>
+            <!-- <div id="playersContainerLobby">
+                <li>Daniel</li>
+                <li>David</li>
+                <li>Jason</li>
+                <li>Sam</li>
+            </div> -->
+
+            <div class="startGameButtonContainerLobby">
+                <button id="start-game" class="main-button">Start Game</button>
+                <p id="waiting-msg">Waiting for host to start the game!</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="game-div" style="display:none">
+      <canvas id="snake-canvas"></canvas>
+      <p id="game-state"></p>
+      <button id="end-game">End Game</button>
+    </div>
+
+    <div id="ranking-div" style="display:none;" class="lobby-div">
+        <div id="listHolderDivRankingPage">
+            <!-- <ul id="listRankingPage">
+            </ul> -->
+            <p id="rankings"></p>
+        </div>
+    </div>
+
+</body>
+  <!-- <body>
+
+
+
     <h1>Hello Snake team</h1>
-    <!--Temp buttons and elements for sending to the server-->
+    Temp buttons and elements for sending to the server
     <h2>Nickname:</h2>
     <input id="nickname-input" />
     <button id="new-game">New Game</button>
@@ -28,5 +89,5 @@
     <h2>Rankings</h2>
     <p id="rankings"></p>
     <canvas id="snake-canvas"></canvas>
-  </body>
+  </body> -->
 </html>
