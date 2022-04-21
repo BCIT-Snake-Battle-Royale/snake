@@ -92,12 +92,17 @@ const setUsernames = (data) => {
     delete clients[NUM_USERS];
     let users = Object.values(clients);
 
+    // Reset lobby
+    let ul = document.getElementById("room-players"); 
+    ul.innerHTML = "";
+
     // Get all nicknames from users
     for(let i = 0 ; i < users.length; i++) {
-        usernames += users[i][USERNAME] + " ";
+        let snake = document.createElement('li');
+        snake.innerHTML = users[i][USERNAME];
+        ul.appendChild(li);
     }
 
-    lobbyPlayersElement.innerHTML = usernames;
     roomCodeElement.innerHTML = users[0][ROOM_ID];
     roomId = users[0][ROOM_ID];
 }
@@ -127,11 +132,16 @@ const displayRankings = (data) => {
     // Sort users by scores, NOTE: has not been tested yet since the score for all users is hardcoded to 0
     users.sort((a, b) => {return a.score - b.score});
 
-    for(let i = 0 ; i < users.length; i++) {
-        gameStates += (i+1) + ": " + users[i][USERNAME] + ", Score:" + users[i][SCORE] + "<br />";
-    }
+    // Reset lobby
+    let ul = document.getElementById("rankings"); 
+    ul.innerHTML = "";
 
-    rankingsElement.innerHTML = gameStates;
+    // Get all nicknames from users
+    for(let i = 0 ; i < users.length; i++) {
+        let snake = document.createElement('li');
+        snake.innerHTML = (i+1) + ": " + users[i][USERNAME] + ", Score:" + users[i][SCORE];
+        ul.appendChild(li);
+    }
 }
 
 // Socket event listeners

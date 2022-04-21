@@ -1,4 +1,9 @@
 /* Landing Div CSS */
+
+.body {
+    font-family: 'Press Start 2P', cursive;
+}
+
 .main-div {
     background: url('Images/bg.png');
     background-size: cover;
