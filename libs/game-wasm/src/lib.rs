@@ -20,6 +20,8 @@ pub struct Game {
     food_item: Item,
     has_speed_item: bool,
     speed_item: Item,
+    has_bomb_item: bool,
+    bomb_item: Item,
     // invincibility_item: Item,
 }
 
@@ -36,6 +38,8 @@ impl Game {
         let food_item = Item::new(ItemType::Food);
         let speed_item = Item::new(ItemType::SpeedModifier);
         let has_speed_item = false;
+        let has_bomb_item = false;
+        let bomb_item = Item::new(ItemType::Bomb);
         // let invincibility_item = Item::new(ItemType::InvincibilityModifier);
 
         Self {
@@ -46,6 +50,8 @@ impl Game {
             food_item,
             has_speed_item,
             speed_item,
+            has_bomb_item,
+            bomb_item,
             // invincibility_item,
         }
     }
@@ -90,8 +96,15 @@ impl Game {
         if self.has_speed_item {
             self.canvas.draw(
                 self.speed_item.get_x(),
-                self.food_item.get_y(),
+                self.speed_item.get_y(),
                 "#8E44AD" // Purple
+            );
+        }
+        if self.has_bomb_item {
+            self.canvas.draw(
+                self.bomb_item.get_x(),
+                self.bomb_item.get_y(),
+                "#000000" // Black
             );
         }
     }
@@ -114,14 +127,13 @@ impl Game {
         // TODO: Determine whether to show a speed item
         // If no speed item, maybe show one (can't be too often)
         if !self.has_speed_item {
-            // 20% of the time, show the current speed item
-            // let mut speed_rng = rand::thread_rng();
-            // let rand_float: f64 = speed_rng.gen::<f64>();
-            // if rand_float < 0.2 {
-            //     self.has_speed_item = true;
-            // }  
+            // 1% of the time, show the current speed item
+            let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
+            if rand_int < 10 {
+                self.has_speed_item = true;
+            }  
         } else {
-            // If there is a speed item and there's a collision, slow down or speed up snake
+            // If there is a speed item already and there's a collision, slow down or speed up snake
             if self.snake.check_head_collision(self.speed_item.get_x(), self.speed_item.get_y()) {
                 let speed_effect: SpeedEffect = self.speed_item.get_speed_effect();
                 if speed_effect == SpeedEffect::Faster {
@@ -131,7 +143,23 @@ impl Game {
                 }
                 // Reset/update speed_item
                 self.has_speed_item = false;
-                self.speed_item = Item::new(ItemType::SpeedModifier);
+                self.speed_item.random_move(&mut self.snake, vec![self.speed_item]);
+                // self.speed_item = Item::new(ItemType::SpeedModifier);
+            }
+        }
+
+        // TODO: Determine whether to show a bomb item
+        // If no speed item, maybe show one (can't be too often)
+        if !self.has_bomb_item {
+            // 1% of the time, show the current speed item
+            let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
+            if rand_int < 10 {
+                self.has_bomb_item = true;
+            }  
+        } else {
+            // TODO: If there is a speed item already and there's a collision, kill the snake
+            if self.snake.check_head_collision(self.speed_item.get_x(), self.speed_item.get_y()) {
+
             }
         }
 

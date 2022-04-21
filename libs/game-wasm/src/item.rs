@@ -1,12 +1,13 @@
 use crate::*;
-use rand::thread_rng;
 use rand::Rng;
+use rand::rngs::StdRng;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Copy, PartialEq)]
 pub enum ItemType {
     Food,
     SpeedModifier,
     InvincibilityModifier,
+    Bomb,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Copy, PartialEq)]
@@ -16,18 +17,21 @@ pub enum SpeedEffect {
     None,
 }
 
-fn get_random_val() -> u32 {
+// Diff seed int for diff item types
+fn get_random_val(item_type: ItemType) -> u32 {
+    // let mut rng = StdRng::seed_from_u64
+    //     (item_type as u64);
+    let mut rng = thread_rng();
     let random_positions: Vec<u32> = (0..500).step_by(20).collect();
     let vec_length = random_positions.len();
-    let index = rand::thread_rng().gen_range(0..vec_length);
+    let index = rng.gen_range(0..vec_length);
     return random_positions[index];
 }
 
 // If item type is SpeedModifier, randomly set speef effect to faster or slower, else set to none
 fn random_speed_effect(item_type: ItemType) -> SpeedEffect {
     if item_type == ItemType::SpeedModifier {
-        let mut rng = thread_rng();
-        let val: u32 = rng.gen_range(0..2);
+        let val: u32 = rand::thread_rng().gen_range(0..2);
         if val == 0 {
             SpeedEffect::Faster
         } else {
@@ -44,17 +48,22 @@ pub struct Item {
     pub x: u32,
     pub y: u32,
     pub speed_effect: SpeedEffect,
+    // rng: StdRng,
 }
 
 impl Item {
     pub fn new(
-        new_item_type: ItemType,
-    ) -> Item {
+        item_type: ItemType,
+    ) -> Item { // Self?
+        let x = get_random_val(item_type);
+        let y = get_random_val(item_type);
+        let speed_effect = random_speed_effect(item_type);
+
         Self {
-            item_type: new_item_type,
-            x: get_random_val(),
-            y: get_random_val(),
-            speed_effect: random_speed_effect(new_item_type),
+            item_type,
+            x,
+            y,
+            speed_effect,
         }      
     }
 
@@ -101,8 +110,8 @@ impl Item {
     }
 
     pub fn random_move(&mut self, snake: &mut snake::Snake, items: Vec<Item>) {
-        self.x = get_random_val();
-        self.y = get_random_val();
+        self.x = get_random_val(self.item_type);
+        self.y = get_random_val(self.item_type);
 
         let segment_size = config::Config::default().segment_size;
         let grid_width = config::Config::default().grid_width;
