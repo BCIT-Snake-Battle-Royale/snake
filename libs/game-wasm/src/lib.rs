@@ -104,7 +104,7 @@ impl Game {
                 self.canvas.draw(
                     self.speed_item.get_x(),
                     self.speed_item.get_y(),
-                    "#452761" // Dark purple for faster
+                    "#9932CC" // Dark purple for faster
                 );
             }
         }
