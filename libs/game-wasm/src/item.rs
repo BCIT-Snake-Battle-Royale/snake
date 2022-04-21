@@ -32,7 +32,7 @@ fn get_random_val(item_type: ItemType) -> u32 {
 fn random_speed_effect(item_type: ItemType) -> SpeedEffect {
     if item_type == ItemType::SpeedModifier {
         let mut rng = thread_rng();
-        let val: u32 = rng.gen_range(0..1);
+        let val: u32 = rng.gen_range(0..2);
         if val == 0 {
             SpeedEffect::Faster
         } else {
@@ -66,6 +66,10 @@ impl Item {
             y,
             speed_effect,
         }      
+    }
+
+    pub fn reset_effect(&mut self) {
+        self.speed_effect = random_speed_effect(ItemType::SpeedModifier);
     }
 
     pub fn set_x(&mut self, x_val: u32) {

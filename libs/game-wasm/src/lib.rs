@@ -155,14 +155,17 @@ impl Game {
             // If there is a speed item already and there's a collision, slow down or speed up snake
             if self.snake.check_head_collision(self.speed_item.get_x(), self.speed_item.get_y()) {
                 let speed_effect: SpeedEffect = self.speed_item.get_speed_effect();
+
                 if speed_effect == SpeedEffect::Faster {
                     self.config.increase_speed();
                 } else { // Else if slower
                     self.config.decrease_speed();
                 }
+                
                 // Reset/update speed_item
                 self.has_speed_item = false;
                 self.speed_item.random_move(&mut self.snake, vec![self.speed_item]);
+                self.speed_item.reset_effect();
             }
         }
 
