@@ -121,10 +121,7 @@ impl Game {
 
         // THE COLLISION ZONE....
         self.snake.die_if_out_of_bounds(self.config.grid_width, self.config.grid_height);
-        
-        // TODO: Still need to use the check_full_collision snake method AND make sure food item and speed items not in same location
 
-        // TODO: Determine whether to show a speed item
         // If no speed item, maybe show one (can't be too often)
         if !self.has_speed_item {
             // 1% of the time, show the current speed item
@@ -148,8 +145,7 @@ impl Game {
             }
         }
 
-        // TODO: Determine whether to show a bomb item
-        // If no speed item, maybe show one (can't be too often)
+        // If no bomb item, maybe show one (can't be too often)
         if !self.has_bomb_item {
             // 1% of the time, show the current speed item
             let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
