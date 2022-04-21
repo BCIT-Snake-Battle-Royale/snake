@@ -148,6 +148,16 @@ socket.on(JOIN_GAME, (data) => {
         setUsernames(data);
     }
 });
+// Emit the snakeGame's gamestate twice a second to the server
+// setInterval(() => {
+//     socket.broadcast.emit("gameState", snakeGame.config())
+// }, 500)
+
+// TODO: Replace player name with the player userId has inputted
+multi.updateStateHandler(snakeGame, socket, "room-code-name-here");
+
+// old
+//multi.emitGameState(snakeGame, socket, "player-name-here");
 
 console.log(game.hello_world())
 console.log(game.Game.default_config())
