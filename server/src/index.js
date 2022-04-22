@@ -1,8 +1,6 @@
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
-import { SocketAddress } from "net";
-//import { NIL } from "uuid";
 
 // event emitter topics
 const NEW_GAME = "newGame";
@@ -109,18 +107,26 @@ io.on("connection", (socket) => {
   }
 
   const endGameHandler = (roomId) => {
+    console.log("endGameHandler", gameStates[roomId]);
     if (gameStates[roomId][NUM_USERS] === 0) {
       console.log("endGameHandler:\nBroadcasted to: " + roomId);
       io.to(roomId).emit(END_GAME, gameStates[roomId]); 
       delete gameStates[roomId];
+      // iterate through allClientRooms and delete this room for all clients
+      for (const [clientId, roomArray] of Object.entries(allClientRooms)) {
+        let updatedRoomArray = roomArray.filter((connectedRoomId) => {
+          return connectedRoomId != roomId;
+        })
+        allClientRooms[clientId] = updatedRoomArray;
+      }
     } else {
       socket.emit(GAME_STATE, gameStates[roomId]);
     }
   }
 
   const updateGameHandler = (roomId, userState) => {
-    console.log("updateGameHandler", roomId, userState);
-    if (roomId in gameStates && id in gameStates[roomId]) {
+    if (roomId in gameStates) {
+      console.log("updateGameHandler", roomId, userState);
       gameStates[roomId][id][IS_ALIVE] = userState[IS_ALIVE];
       gameStates[roomId][id][SCORE] = userState[SCORE]; 
       if (!userState[IS_ALIVE]) {
