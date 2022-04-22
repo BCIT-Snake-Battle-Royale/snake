@@ -77,9 +77,9 @@ let updateInterval;
 // Setting event listeners for starting, joining, creating and ending games
 document.getElementById(NEW_GAME_BTN).addEventListener("click", () => {
     multi.newGameHandler(socket, nicknameElement.value);
-    document.getElementById(START_GAME_BTN).style.display='';
-    document.getElementById(WAITING_MSG).style.display='none';
-    document.getElementById(END_GAME_BTN).style.display='';
+    document.getElementById(START_GAME_BTN).style.display = '';
+    document.getElementById(WAITING_MSG).style.display = 'none';
+    document.getElementById(END_GAME_BTN).style.display = '';
 });
 
 document.getElementById(BACK_BTN).addEventListener("click", () => {
@@ -89,13 +89,14 @@ document.getElementById(BACK_BTN).addEventListener("click", () => {
     ni.value = "";
     let rci = document.getElementById("room-code-input");
     rci.value = "";
+    location.reload()
 });
 
 document.getElementById(JOIN_GAME_BTN).addEventListener("click", () => {
     multi.joinGameHandler(socket, roomElement.value, nicknameElement.value);
-    document.getElementById(START_GAME_BTN).style.display='none';
-    document.getElementById(WAITING_MSG).style.display='';
-    document.getElementById(END_GAME_BTN).style.display='none';
+    document.getElementById(START_GAME_BTN).style.display = 'none';
+    document.getElementById(WAITING_MSG).style.display = '';
+    document.getElementById(END_GAME_BTN).style.display = 'none';
 });
 
 document.getElementById(START_GAME_BTN).addEventListener("click", () => {
@@ -106,8 +107,6 @@ document.getElementById(START_GAME_BTN).addEventListener("click", () => {
 document.getElementById(END_GAME_BTN).addEventListener("click", () => {
     clearInterval(updateInterval);
     multi.endGameHandler(socket, roomId, nicknameElement.value);
-    document.getElementById(GAME_DIV).style.display = 'none';
-    document.getElementById(RANKING_DIV).style.display = '';
 });
 
 // Everytime a user joins a room, display the roomcode and the users in that room
@@ -200,7 +199,7 @@ const displayRankings = (data) => {
 
     // Get all nicknames from users
 
-    for(let i = 0 ; i < users.length; i++) {
+    for (let i = 0; i < users.length; i++) {
         let snake = document.createElement('li');
         snake.innerHTML = (i + 1) + ": " + users[i][USERNAME] + ", Score:" + users[i][SCORE];
         ul.appendChild(snake);
@@ -231,9 +230,9 @@ socket.on(NEW_GAME, (data) => {
 
 // Event listener when the game ends/ someone has won
 socket.on(END_GAME, (data) => {
-    multi.endGame();
     document.getElementById(GAME_DIV).style.display = 'none';
-    document.getElementById(RANKINGS_DISPLAY).style.display = '';
+    document.getElementById(RANKING_DIV).style.display = '';
+    console.log("RANKING DATA", data)
     displayRankings(data);
 })
 
