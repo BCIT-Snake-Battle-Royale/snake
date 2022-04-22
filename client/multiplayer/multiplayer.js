@@ -3,6 +3,8 @@ import * as game from "lib-game-wasm";
 
 const DEFAULT_NETWORK_TICKRATE = 500;
 
+const GAME_ROOM_STATUS = "gameProgressStatus";
+
 let tickConfig;
 let tickTimeout;
 let curConfig;
@@ -99,6 +101,7 @@ var tick = function () {
 }
 
 export function startGame() {
+  console.log(document.querySelector(`.${GAME_ROOM_STATUS}`))
   document.onkeydown = checkKey;
   snakegame = new game.Game(game.Game.default_config());
   snakegame.start();
@@ -106,5 +109,7 @@ export function startGame() {
 }
 
 export function endGame() {
+  console.log("Game ended locally");
+  document.getElementById(GAME_ROOM_STATUS).innerHTML = "You have died but game is still in progress";
   clearTimeout(tickTimeout)
 }
