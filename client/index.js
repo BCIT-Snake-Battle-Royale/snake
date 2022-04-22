@@ -116,12 +116,12 @@ document.getElementById(END_GAME_BTN).addEventListener("click", () => {
 });
 
 document.getElementById(COPY_CODE_BTN).addEventListener("click", () => {
-    navigator.clipboard.writeText(roomCodeElement.textContent);
+    navigator.clipboard.writeText(roomId);
     document.getElementById(COPY_CODE_BTN).textContent = "Copied!";
     setTimeout(() => { 
         document.getElementById(COPY_CODE_BTN).textContent = "Copy";
     }, 1337);
-})
+});
 
 // Everytime a user joins a room, display the roomcode and the users in that room
 const setUsernames = (data) => {
