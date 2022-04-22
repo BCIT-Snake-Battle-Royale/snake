@@ -120,13 +120,17 @@ io.on("connection", (socket) => {
 
   const updateGameHandler = (roomId, userState) => {
     console.log("updateGameHandler", roomId, userState);
-    gameStates[roomId][id][IS_ALIVE] = userState[IS_ALIVE];
-    gameStates[roomId][id][SCORE] = userState[SCORE]; 
-    if (!userState[IS_ALIVE]) {
-      gameStates[roomId][NUM_USERS]--;
-    } 
-    // ends the game if there is only one living player
-    endGameHandler(roomId);
+    if (roomId in gameStates && id in gameStates[roomId]) {
+      gameStates[roomId][id][IS_ALIVE] = userState[IS_ALIVE];
+      gameStates[roomId][id][SCORE] = userState[SCORE]; 
+      if (!userState[IS_ALIVE]) {
+        gameStates[roomId][NUM_USERS]--;
+      } 
+      // ends the game if there is only one living player
+      endGameHandler(roomId);
+    } else {
+      socket.emit(GAME_STATE, []);
+    }
   }
   
   const disconnectHandler = (roomId) => {
