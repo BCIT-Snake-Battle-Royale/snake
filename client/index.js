@@ -6,7 +6,8 @@ import * as multi from "./multiplayer/multiplayer"
 const NEW_GAME_BTN = "new-game";
 const JOIN_GAME_BTN = "join-game";
 const START_GAME_BTN = "start-game";
-//const END_GAME_BTN = "end-game";
+const END_GAME_BTN = "end-game";
+const BACK_BTN = "back-btn-ranking";
 
 // display elements
 const NICK_INPUT = "nickname-input";
@@ -80,16 +81,25 @@ let updateInterval;
 // Setting event listeners for starting, joining, creating and ending games
 document.getElementById(NEW_GAME_BTN).addEventListener("click", () => {
     multi.newGameHandler(socket, nicknameElement.value);
-    document.getElementById(START_GAME_BTN).style.display='block';
+    document.getElementById(START_GAME_BTN).style.display='';
     document.getElementById(WAITING_MSG).style.display='none';
-    //document.getElementById(END_GAME_BTN).style.display='block';
+    document.getElementById(END_GAME_BTN).style.display='';
+});
+
+document.getElementById(BACK_BTN).addEventListener("click", () => {
+    document.getElementById(RANKING_DIV).style.display = 'none';
+    document.getElementById(LANDING_DIV).style.display = '';
+    let ni = document.getElementById("nickname-input");
+    ni.value = "";
+    let rci = document.getElementById("room-code-input");
+    rci.value = "";
 });
 
 document.getElementById(JOIN_GAME_BTN).addEventListener("click", () => {
     multi.joinGameHandler(socket, roomElement.value, nicknameElement.value);
     document.getElementById(START_GAME_BTN).style.display='none';
-    document.getElementById(WAITING_MSG).style.display='block';
-    //document.getElementById(END_GAME_BTN).style.display='none';
+    document.getElementById(WAITING_MSG).style.display='';
+    document.getElementById(END_GAME_BTN).style.display='none';
 });
 
 document.getElementById(START_GAME_BTN).addEventListener("click", () => {
@@ -97,12 +107,12 @@ document.getElementById(START_GAME_BTN).addEventListener("click", () => {
     multi.startGameHandler(socket, roomId);
 });
 
-//document.getElementById(END_GAME_BTN).addEventListener("click", () => {
-//    clearInterval(updateInterval);
-//    multi.endGameHandler(socket, roomId, nicknameElement.value);
-//    document.getElementById(GAME_DIV).style.display = 'none';
-//    document.getElementById(RANKING_DIV).style.display = 'block';
-//});
+document.getElementById(END_GAME_BTN).addEventListener("click", () => {
+    clearInterval(updateInterval);
+    multi.endGameHandler(socket, roomId, nicknameElement.value);
+    document.getElementById(GAME_DIV).style.display = 'none';
+    document.getElementById(RANKING_DIV).style.display = '';
+});
 
 // Everytime a user joins a room, display the roomcode and the users in that room
 const setUsernames = (data) => {
@@ -204,7 +214,7 @@ const displayRankings = (data) => {
 // Socket event listeners
 socket.on(START_GAME, (data) => {
     document.getElementById(LOBBY_DIV).style.display = 'none';
-    document.getElementById(GAME_DIV).style.display = 'block';
+    document.getElementById(GAME_DIV).style.display = '';
     updateInterval = multi.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
 })
 
@@ -214,7 +224,7 @@ socket.on(NEW_GAME, (data) => {
     console.log(data);
     if (data.status === SUCCESS) {
         document.getElementById(LANDING_DIV).style.display = 'none'; // Hide landing Div
-        document.getElementById(LOBBY_DIV).style.display = 'block';
+        document.getElementById(LOBBY_DIV).style.display = '';
         setUsernames(data);
     } else {
         document.getElementById(ERROR_MSG).innerHTML = data.msg;
@@ -224,7 +234,7 @@ socket.on(NEW_GAME, (data) => {
 // Event listener when the game ends/ someone has won
 socket.on(END_GAME, (data) => {
     document.getElementById(GAME_DIV).style.display = 'none';
-    document.getElementById(RANKINGS_DISPLAY).style.display = 'block';
+    document.getElementById(RANKINGS_DISPLAY).style.display = '';
     displayRankings(data);
 })
 
@@ -237,7 +247,7 @@ socket.on(GAME_STATE, (data) => {
 socket.on(JOIN_GAME, (data) => {
     if (data.status === SUCCESS) {
         document.getElementById(LANDING_DIV).style.display = 'none'; // Hide landing Div
-        document.getElementById(LOBBY_DIV).style.display = 'block';
+        document.getElementById(LOBBY_DIV).style.display = '';
         setUsernames(data);
     } else {
         document.getElementById(ERROR_MSG).innerHTML = data.msg;

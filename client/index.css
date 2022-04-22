@@ -191,3 +191,9 @@ body p {
 .leaderboard-row-even {
     background-color: #f1d4d4;
 }
+
+#back-btn-ranking {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
