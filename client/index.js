@@ -1,14 +1,15 @@
 import { io } from 'socket.io-client';
 import * as multi from "./multiplayer/multiplayer"
 
-// button ids
+// // button ids
 const NEW_GAME_BTN = "new-game";
 const JOIN_GAME_BTN = "join-game";
 const START_GAME_BTN = "start-game";
 const END_GAME_BTN = "end-game";
 const BACK_BTN = "back-btn-ranking";
+const COPY_CODE_BTN = "copy-code";
 
-// display elements
+// // display elements
 const NICK_INPUT = "nickname-input";
 const CODE_INPUT = "room-code-input";
 const CODE_DISPLAY = "room-code"
@@ -70,7 +71,7 @@ const socket = io("ws://localhost:4321");
 let roomId = undefined;
 let updateInterval;
 
-// TEST CLIENT CODE
+// // TEST CLIENT CODE
 // socket.emit("hello", { message: "world" })
 // socket.emit("gameState", snakeGame.config())
 
@@ -107,6 +108,14 @@ document.getElementById(START_GAME_BTN).addEventListener("click", () => {
 document.getElementById(END_GAME_BTN).addEventListener("click", () => {
     clearInterval(updateInterval);
     multi.endGameHandler(socket, roomId, nicknameElement.value);
+});
+
+document.getElementById(COPY_CODE_BTN).addEventListener("click", () => {
+    navigator.clipboard.writeText(roomId);
+    document.getElementById(COPY_CODE_BTN).textContent = "Copied!";
+    setTimeout(() => { 
+        document.getElementById(COPY_CODE_BTN).textContent = "Copy";
+    }, 1337);
 });
 
 // Everytime a user joins a room, display the roomcode and the users in that room
