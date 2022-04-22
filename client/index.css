@@ -1,6 +1,6 @@
 /* Landing Div CSS */
 
-.body {
+body p {
     font-family: 'Press Start 2P', cursive;
 }
 
@@ -52,4 +52,35 @@
     font-size: large;
     padding: 12px 20px;
     box-sizing: border-box;
+}
+
+#roomCodeContainerLobby {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+#listHolderDivLobby {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#room-players li {
+    padding-left: 1rem;
+    text-indent: -0.75rem;
+}
+
+#room-players li::before {
+    content: "🐍";
+}
+
+#startGameButtonContainerLobby {
+    text-align: center;
+}
+
+#start-game {
+    position: fixed;
+    bottom: 0;
 }
