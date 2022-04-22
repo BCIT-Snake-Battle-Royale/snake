@@ -1,30 +1,118 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./index.css"/>
-    <title>Snake CST</title>
-    <script src="./bootstrap.js"></script>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <!-- <script src="./multiplayer/multiplayer.js"></script> -->
+  <link rel="stylesheet" href="./index.css" />
+  <title>Snake CST</title>
+  <script src="./bootstrap.js"></script>
+  <!-- <script src="./index.js"></script> -->
 </head>
 
 <body>
-    <div class="main-div">
-        <h1 id="main-title">WELCOME TO SNAKE</h1>
-        <div>
-            <input class="main-input" type="text" id="nickname-input" placeholder="Enter Username">
-        </div>
-        <div>
-            <button class="main-button" id="new-game" type="button">Host Game</button>
-        </div>
-        <div>
-            <input class="main-input" type="text" id="room-code-input" placeholder="Enter Room Code">
-        </div>
-        <div>
-            <button class="main-button" id="join-game" type="button">Join Game</button>
-        </div>
+  <div id="landing-div" class="main-div">
+    <h1 id="main-title">WELCOME TO SNAKE</h1>
+    <div>
+      <input class="main-input" type="text" id="nickname-input" placeholder="Enter Username">
+    </div>
+    <div>
+      <button class="main-button" id="new-game" type="button">Host Game</button>
+    </div>
+    <div>
+      <input class="main-input" type="text" id="room-code-input" placeholder="Enter Room Code">
+    </div>
+    <div>
+      <button class="main-button" id="join-game" type="button">Join Game</button>
+    </div>
+    <p id="error-msg"></p>
+  </div>
+
+  <div id="lobby-div" style="display:none;" class="lobby-div">
+
+    <div id="roomCodeContainerLobby">
+      <p>Room Code: </p>
+      <p id="room-code"></p>
     </div>
 
+    <div id="listHolderDivLobby">
+      <ul id="room-players"></ul>
+    </div>
+
+    <div class="startGameButtonContainerLobby">
+      <button id="start-game" class="main-button">Start Game</button>
+      <p id="waiting-msg">Waiting for host to start the game!</p>
+    </div>
+  </div>
+
+  <div id="game-div" style="display:none">
+
+    <div id="leaderboard-canvas-flex">
+      <div id="leaderboard">
+        <div class="leaderboard-row">
+          <p id="leaderboard-player-0-name" class="leaderboard-player-name"></p>
+          <p id="leaderboard-player-0-score" class="leaderboard-player-score"></p>
+        </div>
+        <div class="leaderboard-row leaderboard-row-even">
+          <p id="leaderboard-player-1-name" class="leaderboard-player-name"></p>
+          <p id="leaderboard-player-1-score" class="leaderboard-player-score"></p>
+        </div>
+        <div class="leaderboard-row">
+          <p id="leaderboard-player-2-name" class="leaderboard-player-name"></p>
+          <p id="leaderboard-player-2-score" class="leaderboard-player-score"></p>
+        </div>
+        <div class="leaderboard-row leaderboard-row-even">
+          <p id="leaderboard-player-3-name" class="leaderboard-player-name"></p>
+          <p id="leaderboard-player-3-score" class="leaderboard-player-score"></p>
+        </div>
+        <div class="leaderboard-row">
+          <p id="leaderboard-player-4-name" class="leaderboard-player-name"></p>
+          <p id="leaderboard-player-4-score" class="leaderboard-player-score"></p>
+        </div>
+      </div>
+
+      <canvas id="snake-canvas" style="border: 1px solid black"></canvas>
+    </div>
+
+    <p id="game-state"></p>
+    <button id="end-game" class="main-button">End Game</button>
+  </div>
+
+  <div id="ranking-div" style="display:none;" class="lobby-div">
+      <div id="listHolderDivRankingPage">
+          <ul id="listRankingPage">
+          </ul>
+          <p id="rankings"></p>
+      </div>
+      <button id="back-btn-ranking" class="main-button">Back</button>
+  </div>
+
 </body>
+<!-- <body>
+
+
+
+    <h1>Hello Snake team</h1>
+    Temp buttons and elements for sending to the server
+    <h2>Nickname:</h2>
+    <input id="nickname-input" />
+    <button id="new-game">New Game</button>
+    <h2>Room Id:</h2>
+    <p id="room-code"></p>
+    <h2>Room Players:</h2>
+    <p id="room-players"></p>
+    <h2>Room code input:</h2>
+    <input id="room-code-input" />
+    <button id="join-game">Join Game</button>
+    <h2>GameState:</h2>
+    <p id="game-state"></p>
+    <button id="start-game">Start Game</button>
+    <button id="end-game">End Game</button>
+    <h2>Rankings</h2>
+    <p id="rankings"></p>
+    <canvas id="snake-canvas"></canvas>
+  </body> -->
 
 </html>
