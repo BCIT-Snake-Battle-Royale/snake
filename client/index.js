@@ -1,6 +1,6 @@
 import * as game from "lib-game-wasm";
 import { io } from 'socket.io-client';
-import * as multiplayer from "./multiplayer/multiplayer"
+import * as multi from "./multiplayer/multiplayer"
 
 // // button ids
 const NEW_GAME_BTN = "new-game";
@@ -8,6 +8,7 @@ const JOIN_GAME_BTN = "join-game";
 const START_GAME_BTN = "start-game";
 const END_GAME_BTN = "end-game";
 const BACK_BTN = "back-btn-ranking";
+const COPY_CODE_BTN = "copy-code";
 
 // // display elements
 const NICK_INPUT = "nickname-input";
@@ -66,19 +67,19 @@ let snakeGame = new game.Game(game.Game.default_config());
 // console.log(snakeGame.snake())
 const nicknameElement = document.getElementById(NICK_INPUT);
 const roomElement = document.getElementById(CODE_INPUT);
-// // const roomCodeElement = document.getElementById(CODE_DISPLAY);
-// // const lobbyGameStatesElement = document.getElementById(GAME_STATE_DISPLAY);
-// // const lobbyPlayersElement = document.getElementById(PLAYERS_DISPLAY);
-// // const rankingsElement = document.getElementById(RANKINGS_DISPLAY);
+const roomCodeElement = document.getElementById(CODE_DISPLAY);
+const lobbyGameStatesElement = document.getElementById(GAME_STATE_DISPLAY);
+const lobbyPlayersElement = document.getElementById(PLAYERS_DISPLAY);
+const rankingsElement = document.getElementById(RANKINGS_DISPLAY);
 const socket = io("ws://localhost:4321");
-// let roomId = undefined;
-// let updateInterval;
+let roomId = undefined;
+let updateInterval;
 
 // // TEST CLIENT CODE
 // socket.emit("hello", { message: "world" })
 // socket.emit("gameState", snakeGame.config())
 
-// // Setting event listeners for starting, joining, creating and ending games
+// Setting event listeners for starting, joining, creating and ending games
 document.getElementById(NEW_GAME_BTN).addEventListener("click", () => {
     multi.newGameHandler(socket, nicknameElement.value);
     document.getElementById(START_GAME_BTN).style.display='';
@@ -113,6 +114,16 @@ document.getElementById(END_GAME_BTN).addEventListener("click", () => {
     document.getElementById(GAME_DIV).style.display = 'none';
     document.getElementById(RANKING_DIV).style.display = '';
 });
+
+document.getElementById(COPY_CODE_BTN).addEventListener("click", () => {
+    navigator.clipboard.writeText(roomCodeElement.value);
+    document.getElementById(COPY_CODE_BTN).style.display = "none";
+    document.getElementById("copied-msg").style.display = "block";
+    setTimeout(() => { 
+        document.getElementById(COPY_CODE_BTN).style.display = "initial";
+        document.getElementById("copied-msg").style.display = "initial";
+    }, 1337);
+})
 
 // Everytime a user joins a room, display the roomcode and the users in that room
 const setUsernames = (data) => {
