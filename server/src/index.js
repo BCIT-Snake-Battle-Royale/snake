@@ -142,7 +142,7 @@ io.on("connection", (socket) => {
   } 
   
   /* listening sockets */
-  socket.on(NEW_GAME,  (data) => {
+  socket.on(NEW_GAME, (data) => {
     newGameHandler(data.username)
   });
 
