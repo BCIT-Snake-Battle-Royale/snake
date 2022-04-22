@@ -30,7 +30,7 @@ pub struct Game {
 impl Game {
     #[wasm_bindgen(constructor)]
     pub fn new(config: JsValue) -> Self {
-        web_sys::console::log_1(&config);
+        // web_sys::console::log_1(&config);
         let config: Config = config.into_serde().unwrap();
         let mut rng = thread_rng();
 
@@ -147,7 +147,7 @@ impl Game {
     pub fn tick(&mut self, tick_input: JsValue) -> JsValue {
         let input: TickInput = tick_input.into_serde().unwrap();
         // web_sys::console::log_1(input.direction_vector);
-        web_sys::console::log_1(&tick_input);
+        // web_sys::console::log_1(&tick_input);
 
         if self.snake.get_is_alive() {
             self.config.direction_vector = input.direction_vector;

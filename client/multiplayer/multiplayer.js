@@ -18,6 +18,7 @@ export function updateStateHandler(socket, roomId, username) {
   // Game state should have the isAlive boolean retrieved from the snakegame config
   setInterval(() => {
     const gs = getGameState(username);
+    console.log("Game state", gs);
     if (curConfig && curConfig?.snake_is_alive === false) {
       endGame();
     } else {
@@ -82,7 +83,6 @@ let checkKey = (e) => {
 }
 
 var tick = function () {
-  console.log("ticking")
   tickConfig = {
     direction_vector: current_dir,
   };

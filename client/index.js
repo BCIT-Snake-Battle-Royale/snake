@@ -233,11 +233,13 @@ socket.on(END_GAME, (data) => {
     document.getElementById(GAME_DIV).style.display = 'none';
     document.getElementById(RANKING_DIV).style.display = '';
     console.log("RANKING DATA", data)
+    console.log("Final ranking data");
     displayRankings(data);
 })
 
 // Event listener for updating game state and other player's scores/ rankings
 socket.on(GAME_STATE, (data) => {
+    console.log("Networking State", data);
     displayGameState(data);
 })
 

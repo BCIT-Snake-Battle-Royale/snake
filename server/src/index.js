@@ -110,6 +110,7 @@ io.on("connection", (socket) => {
     console.log("endGameHandler", gameStates[roomId]);
     if (gameStates[roomId][NUM_USERS] === 0) {
       console.log("endGameHandler:\nBroadcasted to: " + roomId);
+      console.log("GAME STATE", gameStates[roomId]);
       io.to(roomId).emit(END_GAME, gameStates[roomId]);
       delete gameStates[roomId];
       // iterate through allClientRooms and delete this room for all clients
