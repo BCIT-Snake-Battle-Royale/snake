@@ -231,6 +231,7 @@ socket.on(NEW_GAME, (data) => {
 
 // Event listener when the game ends/ someone has won
 socket.on(END_GAME, (data) => {
+    multi.endGame();
     document.getElementById(GAME_DIV).style.display = 'none';
     document.getElementById(RANKINGS_DISPLAY).style.display = '';
     displayRankings(data);

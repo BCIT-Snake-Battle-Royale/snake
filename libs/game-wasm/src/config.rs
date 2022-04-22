@@ -10,6 +10,7 @@ pub struct Config {
     pub direction_vector: i32,
     pub tickrate: u32,
     pub snake_score: usize, 
+    pub snake_is_alive: bool,
 }
 
 impl Default for Config {
@@ -22,6 +23,7 @@ impl Default for Config {
             direction_vector: 0,
             tickrate: 100,
             snake_score: 0,
+            snake_is_alive: true,
         }
     }
 }

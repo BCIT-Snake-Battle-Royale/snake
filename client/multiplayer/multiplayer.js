@@ -16,11 +16,23 @@ let snakegame;
 export function updateStateHandler(socket, roomId, username) {
   // const config = snakeGame;
   // Game state should have the isAlive boolean retrieved from the snakegame config
-  const gs = {
-    isAlive: true,
-    username: username,
-    score: 0,
-  };
+  
+  const gs = !!curConfig 
+    ? {
+      isAlive: true,
+      username,
+      score: 0,
+    }
+    : {
+      isAlive: curConfig?.snake_is_alive ?? true,
+      username,
+      score: curConfig?.snake_score ?? 0,
+    };
+
+  if (curConfig && curConfig?.snake_is_alive === false) {
+    endGame();
+  }
+
   let interval = setInterval(() => {
     socket.emit("gameState", { roomId: roomId, userState: gs });
   }, 500);
@@ -72,7 +84,6 @@ let checkKey = (e) => {
     // right
     current_dir = 90;
   }
-  console.log(current_dir)
 }
 
 var tick = function () {
@@ -83,7 +94,12 @@ var tick = function () {
   curConfig = snakegame.tick(tickConfig);
   // tickTimeout = setTimeout(tick, curConfig.tickrate);
   console.log(curConfig)
-  tickTimeout = setTimeout(tick, default_tickrate);
+
+  if (curConfig?.snake_is_alive === true) {
+    tickTimeout = setTimeout(tick, default_tickrate);
+  } else {
+    endGame();
+  }
 }
 
 export function startGame() {

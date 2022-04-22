@@ -243,6 +243,7 @@ impl Game {
 
         // update snake size
         self.config.snake_score = self.snake.get_score();
+        self.config.snake_is_alive = self.snake.get_is_alive();
 
         self.config()
     }
