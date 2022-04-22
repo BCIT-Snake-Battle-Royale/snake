@@ -61,12 +61,6 @@ body p {
 }
 
 
-#listHolderDivLobby {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
 #room-players li {
     padding-left: 1rem;
     text-indent: -0.75rem;
@@ -80,7 +74,39 @@ body p {
     text-align: center;
 }
 
+
+/* Lobby Div CSS */
+
+#lobby-div {
+    background: url('Images/bg.png');
+    background-size: cover;
+    font-family: 'Press Start 2P', cursive;
+    font-size: larger;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#listHolderDivLobby {
+    color: white;
+    font-size: x-large;
+    background-color: rgba(0, 77, 97, 0.5);
+    padding: 3% 10%;
+    margin: 15% 10%;
+}
+
 #start-game {
-    position: fixed;
-    bottom: 0;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#waiting-msg {
+    text-align: center;
 }
