@@ -110,8 +110,6 @@ document.getElementById(START_GAME_BTN).addEventListener("click", () => {
 document.getElementById(END_GAME_BTN).addEventListener("click", () => {
     clearInterval(updateInterval);
     multi.endGameHandler(socket, roomId, nicknameElement.value);
-    document.getElementById(GAME_DIV).style.display = 'none';
-    document.getElementById(RANKING_DIV).style.display = '';
 });
 
 // Everytime a user joins a room, display the roomcode and the users in that room
@@ -234,7 +232,7 @@ socket.on(NEW_GAME, (data) => {
 // Event listener when the game ends/ someone has won
 socket.on(END_GAME, (data) => {
     document.getElementById(GAME_DIV).style.display = 'none';
-    document.getElementById(RANKINGS_DISPLAY).style.display = '';
+    document.getElementById(RANKING_DIV).style.display = '';
     displayRankings(data);
 })
 
