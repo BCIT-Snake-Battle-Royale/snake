@@ -82,16 +82,12 @@ impl Snake {
         self.is_alive
     }
 
-    pub fn decrement_invinsibility_timer(&mut self) {
-        self.invincibility_timer -= 1
-    }
-
     pub fn is_invincible(&self) -> bool {
-        return self.invincibility_timer >= 0
+        return self.invincibility_timer > 0
     }
 
     pub fn set_invincible(&mut self) {
-        self.invincibility_timer = 1000;
+        self.invincibility_timer = 50;
     }
 
     // Setters below added by item team:
@@ -211,10 +207,6 @@ impl Snake {
     // Right now, speed effect is permanent
     pub fn set_speed_effect(&mut self, new_speed_effect: SpeedEffect) {
         self.speed_effect = new_speed_effect
-    }
-
-    pub fn set_is_invincible(&mut self) {
-        self.invincibility_timer += 10 // This will need to be adjusted
     }
 
     // TODO: Don't think we need this?

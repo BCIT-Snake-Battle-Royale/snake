@@ -85,7 +85,10 @@ impl Game {
         
 
         // change snake color depending on whether snake is alive (green if yes, dark bug colour if no)
-        let snake_color = if self.snake.get_is_alive() { "#008000" } else { "#313312" };
+        // if alive and invincible, change colour to a bluish green. teal, you might even call it
+        let snake_color = if self.snake.get_is_alive() { 
+            if self.snake.is_invincible() { "#419971" } else { "#008000" }
+        } else { "#313312" };
 
         // Draw snake head
         self.canvas.draw(
@@ -186,9 +189,15 @@ impl Game {
                     self.has_bomb_item = true;
                 }  
             } else {
-                // TODO: If there is a speed item already and there's a collision, kill the snake
                 if self.snake.check_head_collision(self.bomb_item.get_x(), self.bomb_item.get_y()) {
-                    self.snake.die();
+                    // only die if the snake is not invincible upon collision
+                    if !self.snake.is_invincible() {
+                        self.snake.die();
+                    }
+
+                    // move bomb regardless of whether the bomb really did kill the snake
+                    self.bomb_item.random_move(&mut self.snake, vec![self.speed_item, self.invincibility_item, self.food_item]);
+                    self.has_bomb_item = false;
                 }
             }
 
@@ -201,7 +210,8 @@ impl Game {
                 }  
             } else {
                 if self.snake.check_head_collision(self.invincibility_item.get_x(), self.invincibility_item.get_y()) {
-                    self.snake.set_is_invincible();
+                    self.has_invincibility_item = false;
+                    self.snake.set_invincible();
                     self.invincibility_item.random_move(&mut self.snake, vec![self.speed_item, self.bomb_item, self.food_item])
                 }
             }
@@ -211,9 +221,14 @@ impl Game {
                 self.snake.increment_score();
             }
 
+            // get rid of the excess tail
             self.snake.truncate_tail();
-            // change below part if invincible? not sure how invincible works 0_0
-            self.snake.die_if_head_tail_collision();
+
+            // if snake is not invincible, die if the head hits the tail 
+            if !self.snake.is_invincible() {
+                self.snake.die_if_head_tail_collision();
+            }
+
         } else {
             // snake dying process takes 5 seconds
             self.config.set_speed((5000 / self.snake.get_score()).try_into().unwrap());
