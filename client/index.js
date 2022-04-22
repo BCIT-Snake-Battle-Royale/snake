@@ -89,6 +89,7 @@ document.getElementById(BACK_BTN).addEventListener("click", () => {
     ni.value = "";
     let rci = document.getElementById("room-code-input");
     rci.value = "";
+    location.reload()
 });
 
 document.getElementById(JOIN_GAME_BTN).addEventListener("click", () => {
@@ -231,6 +232,7 @@ socket.on(NEW_GAME, (data) => {
 socket.on(END_GAME, (data) => {
     document.getElementById(GAME_DIV).style.display = 'none';
     document.getElementById(RANKING_DIV).style.display = '';
+    console.log("RANKING DATA", data)
     displayRankings(data);
 })
 
