@@ -1,13 +1,14 @@
-import { Socket } from "socket.io-client";
 export * from "./multiplayer.js";
 import * as game from "lib-game-wasm";
 
+const DEFAULT_NETWORK_TICKRATE = 500;
+
 let tickConfig;
 let tickTimeout;
-let current_dir = 0;
-let default_tickrate = 100;
 let curConfig;
 let snakegame;
+let current_dir = 0;
+let default_tickrate = 100;
 
 // Event emitter for sending data to the server twice a second
 // Uses the snakeGame config method to get the length, width and height of the snake
@@ -24,7 +25,7 @@ export function updateStateHandler(socket, roomId, username) {
     } else {
       socket.emit("gameState", { roomId: roomId, userState: gs });
     }
-  }, 500);
+  }, DEFAULT_NETWORK_TICKRATE);
 }
 
 // Socket emitter Function for emitting to the server that a client has joined a lobby
