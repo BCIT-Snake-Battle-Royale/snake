@@ -241,6 +241,9 @@ impl Game {
         // Render
         self.render_canvas();
 
+        // update snake size
+        self.config.snake_score = self.snake.get_score();
+
         self.config()
     }
 }

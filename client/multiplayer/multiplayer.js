@@ -42,7 +42,7 @@ export function newGameHandler(socket, username) {
 // Temporary function for ending the snake game
 export function endGameHandler(socket, roomId, username) {
   // TODO: Clear timeout for game loop 
-  clearTimeout(tickTimeout)
+  endGame();
 
   socket.emit("gameState", {
     roomId: roomId,
@@ -91,4 +91,8 @@ export function startGame() {
   snakegame = new game.Game(game.Game.default_config());
   snakegame.start();
   tickTimeout = setTimeout(tick, default_tickrate);
+}
+
+export function endGame() {
+  clearTimeout(tickTimeout)
 }

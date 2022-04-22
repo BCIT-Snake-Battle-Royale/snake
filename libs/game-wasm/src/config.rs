@@ -9,6 +9,7 @@ pub struct Config {
     pub snake_init_pos: (u32, u32),
     pub direction_vector: i32,
     pub tickrate: u32,
+    pub snake_score: usize, 
 }
 
 impl Default for Config {
@@ -20,6 +21,7 @@ impl Default for Config {
             snake_init_pos: (250, 250),
             direction_vector: 0,
             tickrate: 100,
+            snake_score: 0,
         }
     }
 }
