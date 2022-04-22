@@ -47,12 +47,17 @@ function checkKey(e) {
 
 }
 
-let tickConfig
+let tickConfig;
+let tickTimeout;
+
 var tick = function () {
   tickConfig = {
     direction_vector: current_dir,
   };
   let curConfig = snakeGame.tick(tickConfig);
-  setTimeout(tick, curConfig.tickrate);
+  tickTimeout = setTimeout(tick, curConfig.tickrate);
 }
-setTimeout(tick, default_tickrate);
+
+tickTimeout = setTimeout(tick, default_tickrate);
+
+const stopGameLoop = () => { cancelTimeout(tickTimeout) }
