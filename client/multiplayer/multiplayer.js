@@ -50,6 +50,12 @@ export function endGameHandler(socket, roomId, username) {
   });
 }
 
+// TODO: Event emitter for when the host presses "start game"
+export function startGameHandler(socket, roomId) {
+  socket.emit("startGame", { roomId: roomId });
+  console.log("start game");
+}
+
 let checkKey = (e) => {
   e = e || window.event;
 
@@ -80,16 +86,9 @@ var tick = function () {
   tickTimeout = setTimeout(tick, default_tickrate);
 }
 
-// Main function for game start
-// TODO: Event emitter for when the host presses "start game"
-export function startGameHandler(socket, roomId) {
-  socket.emit("startGame", { roomId: roomId });
-
+export function startGame() {
   document.onkeydown = checkKey;
-
   snakegame = new game.Game(game.Game.default_config());
   snakegame.start();
   tickTimeout = setTimeout(tick, default_tickrate);
-
-  console.log("start game");
 }

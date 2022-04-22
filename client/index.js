@@ -212,6 +212,7 @@ socket.on(START_GAME, (data) => {
     document.getElementById(LOBBY_DIV).style.display = 'none';
     document.getElementById(GAME_DIV).style.display = '';
     // updateInterval = multi.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
+    multi.startGame();
     updateInterval = multi.updateStateHandler(socket, roomId, nicknameElement.value);
 })
 
