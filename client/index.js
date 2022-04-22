@@ -42,7 +42,7 @@ const IS_ALIVE = "isAlive";
 // Status messages from server 
 const SUCCESS = "success";
 
-// let snakeGame = new game.Game(game.Game.default_config());   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+let snakeGame = new game.Game(game.Game.default_config());   
 // console.log(snakeGame.config())
 // console.log(snakeGame.snake())
 const nicknameElement = document.getElementById(NICK_INPUT);
@@ -100,7 +100,7 @@ const setUsernames = (data) => {
     for(let i = 0 ; i < users.length; i++) {
         let snake = document.createElement('li');
         snake.innerHTML = users[i][USERNAME];
-        ul.appendChild(li);
+        ul.appendChild(snake);
     }
 
     roomCodeElement.innerHTML = users[0][ROOM_ID];
@@ -140,7 +140,7 @@ const displayRankings = (data) => {
     for(let i = 0 ; i < users.length; i++) {
         let snake = document.createElement('li');
         snake.innerHTML = (i+1) + ": " + users[i][USERNAME] + ", Score:" + users[i][SCORE];
-        ul.appendChild(li);
+        ul.appendChild(snake);
     }
 }
 
