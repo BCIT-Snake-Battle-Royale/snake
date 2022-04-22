@@ -1,4 +1,3 @@
-import * as game from "lib-game-wasm";
 import { io } from 'socket.io-client';
 import * as multi from "./multiplayer/multiplayer"
 
@@ -61,9 +60,6 @@ const leaderboardInfo = [[player0Name, player0Score],
 // Status messages from server 
 const SUCCESS = "success";
 
-let snakeGame = new game.Game(game.Game.default_config());
-// console.log(snakeGame.config())
-// console.log(snakeGame.snake())
 const nicknameElement = document.getElementById(NICK_INPUT);
 const roomElement = document.getElementById(CODE_INPUT);
 const roomCodeElement = document.getElementById(CODE_DISPLAY);
@@ -215,7 +211,8 @@ const displayRankings = (data) => {
 socket.on(START_GAME, (data) => {
     document.getElementById(LOBBY_DIV).style.display = 'none';
     document.getElementById(GAME_DIV).style.display = '';
-    updateInterval = multi.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
+    // updateInterval = multi.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
+    updateInterval = multi.updateStateHandler(socket, roomId, nicknameElement.value);
 })
 
 
