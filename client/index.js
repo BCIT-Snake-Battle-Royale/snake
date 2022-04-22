@@ -7,6 +7,7 @@ const NEW_GAME_BTN = "new-game";
 const JOIN_GAME_BTN = "join-game";
 const START_GAME_BTN = "start-game";
 const END_GAME_BTN = "end-game";
+const COPY_CODE_BTN = "copy-code";
 
 // display elements
 const NICK_INPUT = "nickname-input";
@@ -83,6 +84,16 @@ document.getElementById(END_GAME_BTN).addEventListener("click", () => {
     clearInterval(updateInterval);
     multi.endGameHandler(socket, roomId, nicknameElement.value);
 });
+
+document.getElementById(COPY_CODE_BTN).addEventListener("click", () => {
+    navigator.clipboard.writeText(roomCodeElement.value);
+    document.getElementById(COPY_CODE_BTN).style.display = "none";
+    document.getElementById("copied-msg").style.display = "block";
+    setTimeout(() => { 
+        document.getElementById(COPY_CODE_BTN).style.display = "initial";
+        document.getElementById("copied-msg").style.display = "initial";
+    }, 1337);
+})
 
 // Everytime a user joins a room, display the roomcode and the users in that room
 const setUsernames = (data) => {
