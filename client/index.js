@@ -117,11 +117,9 @@ document.getElementById(END_GAME_BTN).addEventListener("click", () => {
 
 document.getElementById(COPY_CODE_BTN).addEventListener("click", () => {
     navigator.clipboard.writeText(roomCodeElement.textContent);
-    document.getElementById(COPY_CODE_BTN).style.display = "none";
-    document.getElementById("copied-msg").style.display = "block";
+    document.getElementById(COPY_CODE_BTN).textContent = "Copied!";
     setTimeout(() => { 
-        document.getElementById(COPY_CODE_BTN).style.display = "initial";
-        document.getElementById("copied-msg").style.display = "initial";
+        document.getElementById(COPY_CODE_BTN).textContent = "Copy";
     }, 1337);
 })
 
