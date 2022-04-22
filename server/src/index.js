@@ -121,7 +121,7 @@ io.on("connection", (socket) => {
         allClientRooms[clientId] = updatedRoomArray;
       }
     } else {
-      socket.emit(GAME_STATE, gameStates[roomId]);
+      io.to(roomId).emit(GAME_STATE, gameStates[roomId]);
     }
   }
 
