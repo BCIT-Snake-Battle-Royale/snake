@@ -45,7 +45,7 @@ export function endGameHandler(socket, roomId, username) {
 
   socket.emit("gameState", {
     roomId: roomId,
-    userState: { isAlive: false, score: 0, username: username },
+    userState: { isAlive: false, score: curConfig?.snake_score, username: username },
   });
 }
 
