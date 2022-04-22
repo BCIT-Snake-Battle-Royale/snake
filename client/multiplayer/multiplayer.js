@@ -1,13 +1,16 @@
-import { Socket } from "socket.io-client";
 export * from "./multiplayer.js";
 import * as game from "lib-game-wasm";
 
+const DEFAULT_NETWORK_TICKRATE = 500;
+
+const GAME_ROOM_STATUS = "gameProgressStatus";
+
 let tickConfig;
 let tickTimeout;
-let current_dir = 0;
-let default_tickrate = 100;
 let curConfig;
 let snakegame;
+let current_dir = 0;
+let default_tickrate = 100;
 
 // Event emitter for sending data to the server twice a second
 // Uses the snakeGame config method to get the length, width and height of the snake
@@ -18,12 +21,13 @@ export function updateStateHandler(socket, roomId, username) {
   // Game state should have the isAlive boolean retrieved from the snakegame config
   setInterval(() => {
     const gs = getGameState(username);
+    console.log("Game state", gs);
     if (curConfig && curConfig?.snake_is_alive === false) {
       endGame();
     } else {
       socket.emit("gameState", { roomId: roomId, userState: gs });
     }
-  }, 500);
+  }, DEFAULT_NETWORK_TICKRATE);
 }
 
 // Socket emitter Function for emitting to the server that a client has joined a lobby
@@ -44,7 +48,7 @@ export function endGameHandler(socket, roomId, username) {
 
   socket.emit("gameState", {
     roomId: roomId,
-    userState: { isAlive: false, score: 0, username: username },
+    userState: { isAlive: false, score: curConfig?.snake_score, username: username },
   });
 }
 
@@ -82,7 +86,6 @@ let checkKey = (e) => {
 }
 
 var tick = function () {
-  console.log("ticking")
   tickConfig = {
     direction_vector: current_dir,
   };
@@ -98,6 +101,7 @@ var tick = function () {
 }
 
 export function startGame() {
+  console.log(document.querySelector(`.${GAME_ROOM_STATUS}`))
   document.onkeydown = checkKey;
   snakegame = new game.Game(game.Game.default_config());
   snakegame.start();
@@ -105,5 +109,7 @@ export function startGame() {
 }
 
 export function endGame() {
+  console.log("Game ended locally");
+  document.getElementById(GAME_ROOM_STATUS).innerHTML = "You have died but game is still in progress";
   clearTimeout(tickTimeout)
 }
