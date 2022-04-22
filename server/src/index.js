@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
   // every socket represents a connected client
   const id = socket.id
   allClientRooms[id] = []
-  const clientRooms = allClientRooms[id];
+  // const clientRooms = allClientRooms[id];
   console.log("A user has connected")
 
   const randomizeId = (length) => {
@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
 
   const newGameHandler = (username) => {
     // if this socket is in other rooms and is alive
-    if (clientRooms.length > 0) {
+    if (allClientRooms[id].length > 0) {
       socket.emit(NEW_GAME, {status: ERROR, msg: "Connect to one game at a time.", state: []});
     } else if (username.trim() === "") {
       socket.emit(NEW_GAME, {status: ERROR, msg: "Enter a non-empty username.", state: []});
@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
         roomId = randomizeId(ROOM_ID_LEN);
       }
       const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
-      clientRooms.push(roomId);
+      allClientRooms[id].push(roomId);
       gameStates[roomId] = {};
       gameStates[roomId][id] = startingState;
       gameStates[roomId][NUM_USERS] = 1;
@@ -88,7 +88,7 @@ io.on("connection", (socket) => {
         socket.emit(JOIN_GAME, {status: ERROR, msg: "Sorry, this username is taken.", state: []});
       } else {
         const startingState = {roomId: roomId, isAlive: true, score: 0, username: username};
-        clientRooms.push(roomId);
+        allClientRooms[id].push(roomId);
         gameStates[roomId][id] = startingState;
         gameStates[roomId][NUM_USERS]++;
         socket.join(roomId);
@@ -147,8 +147,7 @@ io.on("connection", (socket) => {
     gameStates[roomId][NUM_USERS]--;
     // ends the game if there is only one living player
     endGameHandler(roomId);
-    console.log(roomId);
-    console.log(gameStates[roomId]);
+    console.log("disconnectHandler", gameStates[roomId]);
   } 
   
 
@@ -167,13 +166,16 @@ io.on("connection", (socket) => {
   })
 
   socket.on(GAME_STATE, (data) => {
-    console.log("gameState", data);
-    updateGameHandler(data.roomId, data.userState)
+    const sentRoom = data.roomId;
+    if (sentRoom in gameStates && gameStates[sentRoom][NUM_USERS] != 0) {
+      console.log("gameState", data);
+      updateGameHandler(data.roomId, data.userState)  
+    }
   })
 
   socket.on("disconnecting", () => {
-    console.log("disconnecting", clientRooms);
-    clientRooms.forEach((room) => {
+    console.log("disconnecting", allClientRooms[id]);
+    allClientRooms[id].forEach((room) => {
       disconnectHandler(room);
     });
     delete allClientRooms[id];
