@@ -84,3 +84,30 @@ body p {
     position: fixed;
     bottom: 0;
 }
+
+/* Game */
+#leaderboard-canvas-flex {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+/* Leaderboard */
+#leaderboard {
+    width: 25%;
+    margin: 0;
+    border: 1px solid black;
+}
+
+.leaderboard-row {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+    height: 20%;
+    background-color: #ecacac;
+    justify-content: center;
+    color: #004d61;
+}
+
+.leaderboard-row-even {
+    background-color: #f1d4d4;
+}
