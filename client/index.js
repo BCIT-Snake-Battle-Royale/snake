@@ -191,7 +191,14 @@ const displayRankings = (data) => {
     let users = Object.values(clients);
 
     // Sort users by scores, NOTE: has not been tested yet since the score for all users is hardcoded to 0
-    users.sort((a, b) => { return a.score - b.score });
+    // users.sort((a, b) => { return a.score - b.score });
+    users.sort((x, y) => {
+        if (x.score < y.score) {
+            return 1;
+        } else {
+            return -1;
+        }
+    })
 
     // Reset lobby
     let ul = document.getElementById("rankings");
