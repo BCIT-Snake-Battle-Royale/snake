@@ -78,6 +78,10 @@ impl Snake {
         self.speed_effect
     }
 
+    pub fn get_is_alive(&self) -> bool {
+        self.is_alive
+    }
+
     pub fn decrement_invinsibility_timer(&mut self) {
         self.invincibility_timer -= 1
     }
@@ -94,6 +98,20 @@ impl Snake {
 
     pub fn decrement_invincibility_timer(&mut self) {
         self.invincibility_timer -= 1
+    }
+
+    pub fn die(&mut self) {
+        self.is_alive = false;
+    }
+
+    // reduce the tail length; return true if no more tail left, return false if there might be tail left
+    pub fn death_process(&mut self) -> bool {
+        if self.tail.len() == 0 {
+            return true;
+        } else {
+            self.tail.truncate(self.tail.len() - 1);
+            return false;
+        }
     }
 
     // makes a segment at coordinates according to given direction

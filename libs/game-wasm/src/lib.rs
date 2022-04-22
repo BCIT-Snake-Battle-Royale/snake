@@ -35,12 +35,15 @@ impl Game {
         let mut rng = thread_rng();
 
         let canvas = canvas::Canvas::new("snake-canvas", config.grid_width, config.grid_height);
-        let snake = Snake::new(config.snake_init_pos.0, config.snake_init_pos.1);
-        let food_item = Item::new(ItemType::Food);
-        let speed_item = Item::new(ItemType::SpeedModifier);
+        let mut snake = Snake::new(config.snake_init_pos.0, config.snake_init_pos.1);
+        let mut food_item = Item::new(ItemType::Food);
+        food_item.random_move(&mut snake, vec![]);
+        let mut speed_item = Item::new(ItemType::SpeedModifier);
+        speed_item.random_move(&mut snake, vec![food_item]);
         let has_speed_item = false;
         let has_bomb_item = false;
-        let bomb_item = Item::new(ItemType::Bomb);
+        let mut bomb_item = Item::new(ItemType::Bomb);
+        bomb_item.random_move(&mut snake, vec![food_item, speed_item]);
         let has_invincibility_item = false;
         let invincibility_item = Item::new(ItemType::InvincibilityModifier);
 
@@ -79,15 +82,20 @@ impl Game {
         // Possibly move this chunk to lib-game-wasm/snake.rs
         // Clear canvas
         self.canvas.clear();
+        
+
+        // change snake color depending on whether snake is alive (green if yes, dark bug colour if no)
+        let snake_color = if self.snake.get_is_alive() { "#008000" } else { "#313312" };
+
         // Draw snake head
         self.canvas.draw(
             self.snake.get_head().x(),
             self.snake.get_head().y(),
-            "#008000", // Green
+            snake_color,
         );
         // Draw snake tail
         for SnakeSegment { x, y } in &self.snake.tail {
-            self.canvas.draw(*x, *y, "#008000");
+            self.canvas.draw(*x, *y, snake_color);
         }
         // Draw food item
         self.canvas.draw(
@@ -133,78 +141,87 @@ impl Game {
         // web_sys::console::log_1(input.direction_vector);
         web_sys::console::log_1(&tick_input);
 
-        self.config.direction_vector = input.direction_vector;
-        self.snake.change_direction(self.config.direction_vector);
-        self.snake.move_snake();
+        if self.snake.get_is_alive() {
+            self.config.direction_vector = input.direction_vector;
+            self.snake.change_direction(self.config.direction_vector);
+            self.snake.move_snake();
 
-        if self.snake.is_invincible() {
-            self.snake.decrement_invincibility_timer()
-        }
+            if self.snake.is_invincible() {
+                self.snake.decrement_invincibility_timer()
+            }
 
-        // THE COLLISION ZONE....
-        self.snake.die_if_out_of_bounds(self.config.grid_width, self.config.grid_height);
+            // THE COLLISION ZONE....
+            self.snake.die_if_out_of_bounds(self.config.grid_width, self.config.grid_height);
 
-        // If no speed item, maybe show one (can't be too often)
-        if !self.has_speed_item {
-            // 10% of the time, show the current speed item
-            let rand_int: u32 = rand::thread_rng().gen_range(0..100);
-            if rand_int < 10 {
-                self.has_speed_item = true;
-            }  
-        } else {
-            // If there is a speed item already and there's a collision, slow down or speed up snake
-            if self.snake.check_head_collision(self.speed_item.get_x(), self.speed_item.get_y()) {
-                let speed_effect: SpeedEffect = self.speed_item.get_speed_effect();
+            // If no speed item, maybe show one (can't be too often)
+            if !self.has_speed_item {
+                // 10% of the time, show the current speed item
+                let rand_int: u32 = rand::thread_rng().gen_range(0..100);
+                if rand_int < 10 {
+                    self.has_speed_item = true;
+                }  
+            } else {
+                // If there is a speed item already and there's a collision, slow down or speed up snake
+                if self.snake.check_head_collision(self.speed_item.get_x(), self.speed_item.get_y()) {
+                    let speed_effect: SpeedEffect = self.speed_item.get_speed_effect();
 
-                if speed_effect == SpeedEffect::Faster {
-                    self.config.increase_speed();
-                } else { // Else if slower
-                    self.config.decrease_speed();
+                    if speed_effect == SpeedEffect::Faster {
+                        self.config.increase_speed();
+                    } else { // Else if slower
+                        self.config.decrease_speed();
+                    }
+                    
+                    // Reset/update speed_item
+                    self.has_speed_item = false;
+                    self.speed_item.random_move(&mut self.snake, vec![self.bomb_item, self.invincibility_item, self.food_item]);
+                    self.speed_item.reset_effect();
                 }
-                
-                // Reset/update speed_item
-                self.has_speed_item = false;
-                self.speed_item.random_move(&mut self.snake, vec![self.speed_item]);
-                self.speed_item.reset_effect();
             }
-        }
 
-        // If no bomb item, maybe show one (can't be too often)
-        if !self.has_bomb_item {
-            // 1% of the time, show the current speed item
-            let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
-            if rand_int < 10 {
-                self.has_bomb_item = true;
-            }  
+            // If no bomb item, maybe show one (can't be too often)
+            if !self.has_bomb_item {
+                // 1% of the time, show the current speed item
+                let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
+                if rand_int < 10 {
+                    self.has_bomb_item = true;
+                }  
+            } else {
+                // TODO: If there is a speed item already and there's a collision, kill the snake
+                if self.snake.check_head_collision(self.bomb_item.get_x(), self.bomb_item.get_y()) {
+                    self.snake.die();
+                }
+            }
+
+            // If no invincibility item, maybe show one (can't be too often)
+            if !self.has_invincibility_item {
+                // 1% of the time, show the current speed item
+                let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
+                if rand_int < 10 {
+                    self.has_invincibility_item = true;
+                }  
+            } else {
+                if self.snake.check_head_collision(self.invincibility_item.get_x(), self.invincibility_item.get_y()) {
+                    self.snake.set_is_invincible();
+                    self.invincibility_item.random_move(&mut self.snake, vec![self.speed_item, self.bomb_item, self.food_item])
+                }
+            }
+
+            if self.snake.check_head_collision(self.food_item.get_x(), self.food_item.get_y()) {
+                self.food_item.random_move(&mut self.snake, vec![self.speed_item, self.invincibility_item, self.bomb_item]);
+                self.snake.increment_score();
+            }
+
+            self.snake.truncate_tail();
+            // change below part if invincible? not sure how invincible works 0_0
+            self.snake.die_if_head_tail_collision();
         } else {
-            // TODO: If there is a speed item already and there's a collision, kill the snake
-            if self.snake.check_head_collision(self.bomb_item.get_x(), self.bomb_item.get_y()) {
-
+            // snake dying process takes 5 seconds
+            self.config.set_speed((5000 / self.snake.get_score()).try_into().unwrap());
+            if self.snake.death_process() {
+                // reduce tick rate to an absurdly high number because we shouldn't bother trying to tick anymore
+                self.config.set_speed(100000);
             }
         }
-
-        // If no invincibility item, maybe show one (can't be too often)
-        if !self.has_invincibility_item {
-            // 1% of the time, show the current speed item
-            let rand_int: u32 = rand::thread_rng().gen_range(0..1000);
-            if rand_int < 10 {
-                self.has_invincibility_item = true;
-            }  
-        } else {
-            // TODO: If there is a speed item already and there's a collision, kill the snake
-            if self.snake.check_head_collision(self.invincibility_item.get_x(), self.invincibility_item.get_y()) {
-                self.snake.set_is_invincible();
-            }
-        }
-
-        if self.snake.check_head_collision(self.food_item.get_x(), self.food_item.get_y()) {
-            self.food_item.random_move(&mut self.snake, vec![self.speed_item]);
-            self.snake.increment_score();
-        }
-
-        self.snake.truncate_tail();
-        // change below part if invincible? not sure how invincible works 0_0
-        self.snake.die_if_head_tail_collision();
 
         // Render
         self.render_canvas();

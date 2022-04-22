@@ -36,6 +36,10 @@ impl Config {
             self.tickrate -= 25
         }
     }
+
+    pub fn set_speed(&mut self, speed: u32) {
+        self.tickrate = speed;
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
