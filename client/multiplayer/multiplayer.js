@@ -16,28 +16,14 @@ let snakegame;
 export function updateStateHandler(socket, roomId, username) {
   // const config = snakeGame;
   // Game state should have the isAlive boolean retrieved from the snakegame config
-  
-  const gs = !!curConfig 
-    ? {
-      isAlive: true,
-      username,
-      score: 0,
+  setInterval(() => {
+    const gs = getGameState(username);
+    if (curConfig && curConfig?.snake_is_alive === false) {
+      endGame();
+    } else {
+      socket.emit("gameState", { roomId: roomId, userState: gs });
     }
-    : {
-      isAlive: curConfig?.snake_is_alive ?? true,
-      username,
-      score: curConfig?.snake_score ?? 0,
-    };
-
-  if (curConfig && curConfig?.snake_is_alive === false) {
-    endGame();
-  }
-
-  let interval = setInterval(() => {
-    socket.emit("gameState", { roomId: roomId, userState: gs });
   }, 500);
-
-  return interval;
 }
 
 // Socket emitter Function for emitting to the server that a client has joined a lobby
@@ -68,6 +54,15 @@ export function startGameHandler(socket, roomId) {
   console.log("start game");
 }
 
+export function getGameState(username) {
+  const gs = {
+    isAlive: curConfig?.snake_is_alive,
+    username,
+    score: curConfig?.snake_score,
+  };
+  return gs;
+}
+
 let checkKey = (e) => {
   e = e || window.event;
 
@@ -93,7 +88,7 @@ var tick = function () {
   };
   curConfig = snakegame.tick(tickConfig);
   // tickTimeout = setTimeout(tick, curConfig.tickrate);
-  console.log(curConfig)
+  // console.log(curConfig)
 
   if (curConfig?.snake_is_alive === true) {
     tickTimeout = setTimeout(tick, default_tickrate);

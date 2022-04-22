@@ -110,6 +110,7 @@ body p {
 #waiting-msg {
     text-align: center;
 }
+
 /* Game Div CSS*/
 
 #game-div {
@@ -140,6 +141,7 @@ body p {
     display: block;
     width: 1400px;
 }
+
 /* Ranking Div CSS*/
 #ranking-div {
     background: url('Images/bg.png');
