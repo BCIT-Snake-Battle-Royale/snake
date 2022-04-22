@@ -6,7 +6,7 @@ import * as multi from "./multiplayer/multiplayer"
 const NEW_GAME_BTN = "new-game";
 const JOIN_GAME_BTN = "join-game";
 const START_GAME_BTN = "start-game";
-const END_GAME_BTN = "end-game";
+//const END_GAME_BTN = "end-game";
 
 // display elements
 const NICK_INPUT = "nickname-input";
@@ -64,14 +64,14 @@ document.getElementById(NEW_GAME_BTN).addEventListener("click", () => {
     multi.newGameHandler(socket, nicknameElement.value);
     document.getElementById(START_GAME_BTN).style.display='block';
     document.getElementById(WAITING_MSG).style.display='none';
-    document.getElementById(END_GAME_BTN).style.display='block';
+    //document.getElementById(END_GAME_BTN).style.display='block';
 });
 
 document.getElementById(JOIN_GAME_BTN).addEventListener("click", () => {
     multi.joinGameHandler(socket, roomElement.value, nicknameElement.value);
     document.getElementById(START_GAME_BTN).style.display='none';
     document.getElementById(WAITING_MSG).style.display='block';
-    document.getElementById(END_GAME_BTN).style.display='none';
+    //document.getElementById(END_GAME_BTN).style.display='none';
 });
 
 document.getElementById(START_GAME_BTN).addEventListener("click", () => {
@@ -79,10 +79,12 @@ document.getElementById(START_GAME_BTN).addEventListener("click", () => {
     multi.startGameHandler(socket, roomId);
 });
 
-document.getElementById(END_GAME_BTN).addEventListener("click", () => {
-    clearInterval(updateInterval);
-    multi.endGameHandler(socket, roomId, nicknameElement.value);
-});
+//document.getElementById(END_GAME_BTN).addEventListener("click", () => {
+//    clearInterval(updateInterval);
+//    multi.endGameHandler(socket, roomId, nicknameElement.value);
+//    document.getElementById(GAME_DIV).style.display = 'none';
+//    document.getElementById(RANKING_DIV).style.display = 'block';
+//});
 
 // Everytime a user joins a room, display the roomcode and the users in that room
 const setUsernames = (data) => {
@@ -118,7 +120,6 @@ const displayGameState = (data) => {
     for(let i = 0 ; i < users.length; i++) {
         gameStates += users[i][USERNAME] + ", Score:" + users[i][SCORE] + ", State:" + (users[i][IS_ALIVE] ? " alive" : "dead") + "<br />";
     }
-
     lobbyGameStatesElement.innerHTML = gameStates;
 }
 
@@ -137,6 +138,7 @@ const displayRankings = (data) => {
     ul.innerHTML = "";
 
     // Get all nicknames from users
+
     for(let i = 0 ; i < users.length; i++) {
         let snake = document.createElement('li');
         snake.innerHTML = (i+1) + ": " + users[i][USERNAME] + ", Score:" + users[i][SCORE];
@@ -150,6 +152,7 @@ socket.on(START_GAME, (data) => {
     document.getElementById(GAME_DIV).style.display='block';
     updateInterval = multi.updateStateHandler(snakeGame, socket, roomId, nicknameElement.value);
 })
+
 
 // Event listener for when the host pressed "new game"
 socket.on(NEW_GAME, (data) => {
