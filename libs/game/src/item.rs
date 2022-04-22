@@ -15,8 +15,13 @@ pub struct Item {
 }
 
 impl Item {
-    
-    pub fn new(item_type: ItemType, x: usize, y: usize, speed_effect: i32, invincibility: bool) -> Item {
+    pub fn new(
+        item_type: ItemType,
+        x: usize,
+        y: usize,
+        speed_effect: i32,
+        invincibility: bool,
+    ) -> Item {
         Self {
             item_type,
             x,
@@ -40,5 +45,4 @@ impl Item {
     pub fn get_item_type(&self) -> ItemType {
         self.item_type
     }
-
 }

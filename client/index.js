@@ -253,10 +253,3 @@ socket.on(JOIN_GAME, (data) => {
         document.getElementById(ERROR_MSG).innerHTML = data.msg;
     }
 });
-
-console.log(game.hello_world())
-console.log(game.Game.default_config())
-
-snakeGame.start();
-console.log(snakeGame.config())
-console.log(snakeGame.snake())
