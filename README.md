@@ -1,5 +1,9 @@
 # Snake wasm
 
+### User Sequence Diagram
+
+![Sequence diagram illustrating program flow](https://ibb.co/64Jg8dm)
+
 ### How to start the project?
 
 1. Ensure you have wasm-pack and target of "wasm-unknown-unknown"
