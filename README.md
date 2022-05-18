@@ -3,7 +3,6 @@
 ### User Sequence Diagram
 
 ![Sequence diagram illustrating program flow](https://cdn.discordapp.com/attachments/955610155024777236/958245465617469440/Snake_Program_Flow.png)
-
 ### How to start the project?
 
 1. Ensure you have wasm-pack and target of "wasm-unknown-unknown"
